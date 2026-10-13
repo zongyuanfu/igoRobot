@@ -1,0 +1,790 @@
+{
+  "source": "benchmarks/results/homepage_comparison_20261004/full",
+  "source_sha256": {
+    "planigo": "a7adba5e7e36c96e631c51053047f3ad33cdee8c29f56440d9ab3efd84e9ea59",
+    "curobo_trajopt": "2e185a693306153acd8fbe0ab06604688e46d40145c233dd99a0fc6e7d3764ad",
+    "curobo_full": "7f3ce8da53eb5cd99c66221bb8c66f9a6031181f72b3d6370b1a92ae191491a4"
+  },
+  "n": 800,
+  "summaries": {
+    "planigo": {
+      "n": 800,
+      "success": 681,
+      "errors": 0,
+      "planner_time_s": {
+        "n": 800,
+        "median": 0.16712715349785867,
+        "p90": 0.17794589820259718
+      },
+      "pipeline_time_s": {
+        "n": 800,
+        "median": 1.1999056434979138,
+        "p90": 1.793997250002576
+      },
+      "optimize_time_s": {
+        "n": 800,
+        "median": 0.15765938999902573,
+        "p90": 0.16795111509709387
+      },
+      "optimize_cuda_event_time_s": {
+        "n": 800,
+        "median": 0.15767058563232422,
+        "p90": 0.16797564849853516
+      },
+      "planner_cuda_event_time_s": {
+        "n": 0,
+        "median": null,
+        "p90": null
+      },
+      "world_update_time_s": {
+        "n": 0,
+        "median": null,
+        "p90": null
+      },
+      "esdf_time_s": {
+        "n": 800,
+        "median": 0.9072832985002606,
+        "p90": 1.6237163999008772
+      },
+      "duration_s": {
+        "n": 800,
+        "median": 2.080275592486391,
+        "p90": 2.325110438365727
+      },
+      "successful_duration_s": {
+        "n": 681,
+        "median": 2.0597507007588067,
+        "p90": 2.272403670668841
+      },
+      "native_success": 681,
+      "groups": {
+        "bookshelf_small_panda": {
+          "n": 100,
+          "success": 92,
+          "native_success": 92,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.16973059500014642,
+            "p90": 0.186311588697572
+          }
+        },
+        "bookshelf_tall_panda": {
+          "n": 100,
+          "success": 97,
+          "native_success": 97,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.16678202750335913,
+            "p90": 0.17664329360486591
+          }
+        },
+        "bookshelf_thin_panda": {
+          "n": 100,
+          "success": 99,
+          "native_success": 99,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.16596676299741375,
+            "p90": 0.17700350820014138
+          }
+        },
+        "box_panda": {
+          "n": 100,
+          "success": 100,
+          "native_success": 100,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.1641360950015951,
+            "p90": 0.1741833213993232
+          }
+        },
+        "box_panda_flipped": {
+          "n": 100,
+          "success": 94,
+          "native_success": 94,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.16598069950123318,
+            "p90": 0.17506600490087296
+          }
+        },
+        "cage_panda": {
+          "n": 100,
+          "success": 83,
+          "native_success": 83,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.16518748649468762,
+            "p90": 0.17669664960267256
+          }
+        },
+        "table_pick_panda": {
+          "n": 100,
+          "success": 98,
+          "native_success": 98,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.16707128450434539,
+            "p90": 0.1774530450005841
+          }
+        },
+        "table_under_pick_panda": {
+          "n": 100,
+          "success": 18,
+          "native_success": 18,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.1727324884996051,
+            "p90": 0.18572203789954073
+          }
+        }
+      },
+      "failure_codes": {
+        "joint_limit": 12,
+        "environment": 117
+      }
+    },
+    "curobo_trajopt": {
+      "n": 800,
+      "success": 621,
+      "errors": 0,
+      "planner_time_s": {
+        "n": 800,
+        "median": 0.0987170275002427,
+        "p90": 0.13128717789659278
+      },
+      "pipeline_time_s": {
+        "n": 800,
+        "median": 0.8385693929994886,
+        "p90": 1.781791983099538
+      },
+      "optimize_time_s": {
+        "n": 0,
+        "median": null,
+        "p90": null
+      },
+      "optimize_cuda_event_time_s": {
+        "n": 0,
+        "median": null,
+        "p90": null
+      },
+      "planner_cuda_event_time_s": {
+        "n": 800,
+        "median": 0.10270713806152344,
+        "p90": 0.1356481689453125
+      },
+      "world_update_time_s": {
+        "n": 800,
+        "median": 0.002947541495814221,
+        "p90": 0.004924703099095496
+      },
+      "esdf_time_s": {
+        "n": 651,
+        "median": 1.0224523460055934,
+        "p90": 1.6404377130020293
+      },
+      "duration_s": {
+        "n": 651,
+        "median": 2.0000000298023224,
+        "p90": 2.0000000298023224
+      },
+      "successful_duration_s": {
+        "n": 621,
+        "median": 2.0000000298023224,
+        "p90": 2.0000000298023224
+      },
+      "native_success": 651,
+      "groups": {
+        "bookshelf_small_panda": {
+          "n": 100,
+          "success": 90,
+          "native_success": 99,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.10117015250216355,
+            "p90": 0.11053382289828732
+          }
+        },
+        "bookshelf_tall_panda": {
+          "n": 100,
+          "success": 98,
+          "native_success": 99,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.10831059450356406,
+            "p90": 0.13902681049657986
+          }
+        },
+        "bookshelf_thin_panda": {
+          "n": 100,
+          "success": 99,
+          "native_success": 100,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.10890871499941568,
+            "p90": 0.1325056727975607
+          }
+        },
+        "box_panda": {
+          "n": 100,
+          "success": 100,
+          "native_success": 100,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.0969472834985936,
+            "p90": 0.12877559469416155
+          }
+        },
+        "box_panda_flipped": {
+          "n": 100,
+          "success": 28,
+          "native_success": 28,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.05696514349983772,
+            "p90": 0.10508018790133065
+          }
+        },
+        "cage_panda": {
+          "n": 100,
+          "success": 91,
+          "native_success": 96,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.09854493249440566,
+            "p90": 0.13118141420127358
+          }
+        },
+        "table_pick_panda": {
+          "n": 100,
+          "success": 88,
+          "native_success": 97,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.10000707499784767,
+            "p90": 0.13192294309556019
+          }
+        },
+        "table_under_pick_panda": {
+          "n": 100,
+          "success": 27,
+          "native_success": 32,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.05358034200253314,
+            "p90": 0.09877208389807493
+          }
+        }
+      },
+      "failure_codes": {
+        "environment": 30,
+        "native_planning_failed": 149
+      }
+    },
+    "curobo_full": {
+      "n": 800,
+      "success": 624,
+      "errors": 0,
+      "planner_time_s": {
+        "n": 800,
+        "median": 0.11674902749655303,
+        "p90": 0.4657438229995024
+      },
+      "pipeline_time_s": {
+        "n": 800,
+        "median": 0.8668500280000444,
+        "p90": 1.7873114895999607
+      },
+      "optimize_time_s": {
+        "n": 0,
+        "median": null,
+        "p90": null
+      },
+      "optimize_cuda_event_time_s": {
+        "n": 0,
+        "median": null,
+        "p90": null
+      },
+      "planner_cuda_event_time_s": {
+        "n": 800,
+        "median": 0.12091499328613281,
+        "p90": 0.46916737670898445
+      },
+      "world_update_time_s": {
+        "n": 800,
+        "median": 0.003099940498941578,
+        "p90": 0.005043971495615552
+      },
+      "esdf_time_s": {
+        "n": 655,
+        "median": 1.0230187219931395,
+        "p90": 1.6238822714003618
+      },
+      "duration_s": {
+        "n": 655,
+        "median": 2.0000000298023224,
+        "p90": 2.0000000298023224
+      },
+      "successful_duration_s": {
+        "n": 624,
+        "median": 2.0000000298023224,
+        "p90": 2.0000000298023224
+      },
+      "native_success": 655,
+      "groups": {
+        "bookshelf_small_panda": {
+          "n": 100,
+          "success": 90,
+          "native_success": 99,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.09666560999903595,
+            "p90": 0.1276684176053095
+          }
+        },
+        "bookshelf_tall_panda": {
+          "n": 100,
+          "success": 98,
+          "native_success": 99,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.09841796150067239,
+            "p90": 0.13113540019694483
+          }
+        },
+        "bookshelf_thin_panda": {
+          "n": 100,
+          "success": 99,
+          "native_success": 100,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.13084251200416475,
+            "p90": 0.13262913709695567
+          }
+        },
+        "box_panda": {
+          "n": 100,
+          "success": 100,
+          "native_success": 100,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.09709796349852695,
+            "p90": 0.1288299466985336
+          }
+        },
+        "box_panda_flipped": {
+          "n": 100,
+          "success": 28,
+          "native_success": 28,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.40929113200036227,
+            "p90": 0.5020561658973748
+          }
+        },
+        "cage_panda": {
+          "n": 100,
+          "success": 91,
+          "native_success": 96,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.09870342900467222,
+            "p90": 0.13181299530406249
+          }
+        },
+        "table_pick_panda": {
+          "n": 100,
+          "success": 88,
+          "native_success": 97,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.1319114525031182,
+            "p90": 0.2868533601045783
+          }
+        },
+        "table_under_pick_panda": {
+          "n": 100,
+          "success": 30,
+          "native_success": 36,
+          "planner_time_s": {
+            "n": 100,
+            "median": 0.680705222497636,
+            "p90": 2.001920393095497
+          }
+        }
+      },
+      "failure_codes": {
+        "environment": 31,
+        "native_planning_failed": 145
+      }
+    }
+  },
+  "common_success_n": 580,
+  "common_success_metrics": {
+    "planigo": {
+      "planner_time_s": {
+        "n": 580,
+        "median": 0.16672057499818038,
+        "p90": 0.1772337780028465
+      },
+      "pipeline_time_s": {
+        "n": 580,
+        "median": 1.1992514429985022,
+        "p90": 1.801767947299959
+      },
+      "duration_s": {
+        "n": 580,
+        "median": 2.0727365234991386,
+        "p90": 2.257644239875116
+      }
+    },
+    "curobo_trajopt": {
+      "planner_time_s": {
+        "n": 580,
+        "median": 0.10144777849927777,
+        "p90": 0.13176631199385155
+      },
+      "pipeline_time_s": {
+        "n": 580,
+        "median": 1.1352217720013869,
+        "p90": 1.7924783188027504
+      },
+      "duration_s": {
+        "n": 580,
+        "median": 2.0000000298023224,
+        "p90": 2.0000000298023224
+      }
+    },
+    "curobo_full": {
+      "planner_time_s": {
+        "n": 580,
+        "median": 0.09869344450271456,
+        "p90": 0.1328829626989318
+      },
+      "pipeline_time_s": {
+        "n": 580,
+        "median": 1.0556269865010108,
+        "p90": 1.7878167045993905
+      },
+      "duration_s": {
+        "n": 580,
+        "median": 2.0000000298023224,
+        "p90": 2.0000000298023224
+      }
+    }
+  },
+  "metadata": {
+    "planigo": {
+      "planner": "planigo",
+      "created_at": "2026-10-04T09:55:45.545152+08:00",
+      "git_commit": "499b8f94aae7ebd003d3a548f53d019107b21d69",
+      "git_status": {
+        "dirty": true,
+        "changed_paths": [
+          " M .gitignore",
+          " M benchmarks/bspline_full_horizon_cuda/run_robometrics.py",
+          " M benchmarks/curobo/run_robometrics_curobo.py",
+          " M docs/collision.md",
+          " M docs/devlog/202610/20261003.md",
+          " M planigo/scene/robometrics_scene.py",
+          " M tests/test_robometrics_scene.py",
+          "?? benchmarks/compare_homepage_planners.py",
+          "?? benchmarks/curobo/homepage_comparison_config.yml",
+          "?? plans/GITHUB_PAGES_HOMEPAGE_PLAN.md",
+          "?? tests/test_homepage_comparison.py"
+        ]
+      },
+      "build": {
+        "build_type": "Release",
+        "cuda_architecture": "89",
+        "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU, 8.9"
+      },
+      "curobo_commit": "8e734f3ced1df898990bcd92de40abce475907db",
+      "curobo_version": "0.8.0.post1.dev42",
+      "planigo_config": {
+        "specification": {
+          "degree": 3,
+          "control_points": 12,
+          "free_control_points": 6,
+          "initial_duration_s": 2.5,
+          "optimizer_waypoints": 61
+        },
+        "solver": {
+          "igo_iterations": 300,
+          "igo_B": 300,
+          "igo_B0": 100,
+          "igo_T0": 151,
+          "igo_dt": 0.35,
+          "control_point_std": 0.25,
+          "duration_adjustment_rounds": 0,
+          "minimum_duration_s": 1.0,
+          "maximum_duration_s": 5.0,
+          "dynamics_time_margin": 1.05,
+          "duration_change_threshold_s": 0.01,
+          "output_retiming": true
+        },
+        "objective": {
+          "path_position_weight": 1.0,
+          "path_orientation_weight": 1.0
+        },
+        "safety": {
+          "environment_clearance": 0.01,
+          "self_clearance": 0.0
+        },
+        "dynamics": {
+          "max_acceleration": 15.0,
+          "max_jerk": 500.0
+        },
+        "runtime": {
+          "voxel_size": 0.02,
+          "evaluation_dt_s": 0.05,
+          "diagnostic_dt_s": 0.025,
+          "position_tolerance": 0.01,
+          "orientation_tolerance": 0.001
+        }
+      },
+      "curobo_config": {
+        "planner": {
+          "interpolation_dt": 0.025,
+          "position_tolerance_m": 0.01,
+          "orientation_tolerance_rad": 0.05,
+          "collision_activation_distance_m": 0.02,
+          "num_ik_seeds": 32,
+          "num_trajopt_seeds": 4,
+          "num_warmup_iterations": 5,
+          "use_cuda_graph": true,
+          "trajopt_max_attempts": 1,
+          "trajopt_enable_graph_attempt": 10,
+          "full_max_attempts": 5,
+          "full_enable_graph_attempt": 1
+        },
+        "evaluation": {
+          "voxel_size": 0.02,
+          "position_tolerance_m": 0.01,
+          "orientation_tolerance_quat": 0.001,
+          "environment_clearance_m": 0.01,
+          "self_clearance_m": 0.0,
+          "max_acceleration": 15.0,
+          "max_jerk": 500.0
+        }
+      },
+      "seed_policy": "Planigo: 42 + problem_index. cuRobo: base 42, reset before every task (native sampler).",
+      "scope": "Identical start/pose-goal tasks and shared final evaluator; native internal IK, collision geometry, seeds and budgets differ.",
+      "timing": "Synchronized host elapsed. planner_time excludes world construction/update and common evaluation; Planigo includes its fixed-goal IK, session creation, retiming and trajectory generation; cuRobo includes native pose planning and interpolated-plan extraction. pipeline_time includes per-task scene setup and final evaluation, excludes amortized planner/evaluator construction and warmup. CUDA event fields are separate scoped GPU timeline measurements, not kernel sums.",
+      "sampling": "Planigo uniform grid with dt <=0.025; cuRobo native interpolation dt=0.025. Distinct grids, same maximum interval. No continuous collision proof.",
+      "gpu_before": "name, temperature.gpu, power.draw [W], clocks.current.sm [MHz], utilization.gpu [%], memory.used [MiB]\nNVIDIA GeForce RTX 4060 Laptop GPU, 40, 11.52 W, 465 MHz, 24 %, 1376 MiB\n",
+      "gpu_after": "name, temperature.gpu, power.draw [W], clocks.current.sm [MHz], utilization.gpu [%], memory.used [MiB]\nNVIDIA GeForce RTX 4060 Laptop GPU, 46, 29.46 W, 2685 MHz, 4 %, 1819 MiB\n",
+      "complete": true
+    },
+    "curobo_trajopt": {
+      "planner": "curobo_trajopt",
+      "created_at": "2026-10-04T10:11:20.296044+08:00",
+      "git_commit": "499b8f94aae7ebd003d3a548f53d019107b21d69",
+      "git_status": {
+        "dirty": true,
+        "changed_paths": [
+          " M .gitignore",
+          " M benchmarks/bspline_full_horizon_cuda/run_robometrics.py",
+          " M benchmarks/curobo/run_robometrics_curobo.py",
+          " M docs/collision.md",
+          " M docs/devlog/202610/20261003.md",
+          " M planigo/scene/robometrics_scene.py",
+          " M tests/test_robometrics_scene.py",
+          "?? benchmarks/HOMEPAGE_COMPARISON.md",
+          "?? benchmarks/compare_homepage_planners.py",
+          "?? benchmarks/curobo/homepage_comparison_config.yml",
+          "?? plans/GITHUB_PAGES_HOMEPAGE_PLAN.md",
+          "?? tests/test_homepage_comparison.py"
+        ]
+      },
+      "build": {
+        "build_type": "Release",
+        "cuda_architecture": "89",
+        "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU, 8.9"
+      },
+      "curobo_commit": "8e734f3ced1df898990bcd92de40abce475907db",
+      "curobo_version": "0.8.0.post1.dev42",
+      "planigo_config": {
+        "specification": {
+          "degree": 3,
+          "control_points": 12,
+          "free_control_points": 6,
+          "initial_duration_s": 2.5,
+          "optimizer_waypoints": 61
+        },
+        "solver": {
+          "igo_iterations": 300,
+          "igo_B": 300,
+          "igo_B0": 100,
+          "igo_T0": 151,
+          "igo_dt": 0.35,
+          "control_point_std": 0.25,
+          "duration_adjustment_rounds": 0,
+          "minimum_duration_s": 1.0,
+          "maximum_duration_s": 5.0,
+          "dynamics_time_margin": 1.05,
+          "duration_change_threshold_s": 0.01,
+          "output_retiming": true
+        },
+        "objective": {
+          "path_position_weight": 1.0,
+          "path_orientation_weight": 1.0
+        },
+        "safety": {
+          "environment_clearance": 0.01,
+          "self_clearance": 0.0
+        },
+        "dynamics": {
+          "max_acceleration": 15.0,
+          "max_jerk": 500.0
+        },
+        "runtime": {
+          "voxel_size": 0.02,
+          "evaluation_dt_s": 0.05,
+          "diagnostic_dt_s": 0.025,
+          "position_tolerance": 0.01,
+          "orientation_tolerance": 0.001
+        }
+      },
+      "curobo_config": {
+        "planner": {
+          "interpolation_dt": 0.025,
+          "position_tolerance_m": 0.01,
+          "orientation_tolerance_rad": 0.05,
+          "collision_activation_distance_m": 0.02,
+          "num_ik_seeds": 32,
+          "num_trajopt_seeds": 4,
+          "num_warmup_iterations": 5,
+          "use_cuda_graph": true,
+          "trajopt_max_attempts": 1,
+          "trajopt_enable_graph_attempt": 10,
+          "full_max_attempts": 5,
+          "full_enable_graph_attempt": 1
+        },
+        "evaluation": {
+          "voxel_size": 0.02,
+          "position_tolerance_m": 0.01,
+          "orientation_tolerance_quat": 0.001,
+          "environment_clearance_m": 0.01,
+          "self_clearance_m": 0.0,
+          "max_acceleration": 15.0,
+          "max_jerk": 500.0
+        }
+      },
+      "seed_policy": "Planigo: 42 + problem_index. cuRobo: base 42, reset before every task (native sampler).",
+      "scope": "Identical start/pose-goal tasks and shared final evaluator; native internal IK, collision geometry, seeds and budgets differ.",
+      "timing": "Synchronized host elapsed. planner_time excludes world construction/update and common evaluation; Planigo includes its fixed-goal IK, session creation, retiming and trajectory generation; cuRobo includes native pose planning and interpolated-plan extraction. pipeline_time includes per-task scene setup and final evaluation, excludes amortized planner/evaluator construction and warmup. CUDA event fields are separate scoped GPU timeline measurements, not kernel sums.",
+      "sampling": "Planigo uniform grid with dt <=0.025; cuRobo native interpolation dt=0.025. Distinct grids, same maximum interval. No continuous collision proof.",
+      "gpu_before": "name, temperature.gpu, power.draw [W], clocks.current.sm [MHz], utilization.gpu [%], memory.used [MiB]\nNVIDIA GeForce RTX 4060 Laptop GPU, 43, 10.54 W, 465 MHz, 39 %, 1593 MiB\n",
+      "planner_initialization_time_s": 0.6748544090005453,
+      "warmup_time_s": 3.3654527609978686,
+      "gpu_after": "name, temperature.gpu, power.draw [W], clocks.current.sm [MHz], utilization.gpu [%], memory.used [MiB]\nNVIDIA GeForce RTX 4060 Laptop GPU, 42, 21.14 W, 2685 MHz, 0 %, 2134 MiB\n",
+      "complete": true
+    },
+    "curobo_full": {
+      "planner": "curobo_full",
+      "created_at": "2026-10-04T10:23:53.272454+08:00",
+      "git_commit": "499b8f94aae7ebd003d3a548f53d019107b21d69",
+      "git_status": {
+        "dirty": true,
+        "changed_paths": [
+          " M .gitignore",
+          " M benchmarks/bspline_full_horizon_cuda/run_robometrics.py",
+          " M benchmarks/curobo/run_robometrics_curobo.py",
+          " M docs/collision.md",
+          " M docs/devlog/202610/20261003.md",
+          " M planigo/scene/robometrics_scene.py",
+          " M tests/test_robometrics_scene.py",
+          "?? benchmarks/HOMEPAGE_COMPARISON.md",
+          "?? benchmarks/compare_homepage_planners.py",
+          "?? benchmarks/curobo/homepage_comparison_config.yml",
+          "?? plans/GITHUB_PAGES_HOMEPAGE_PLAN.md",
+          "?? tests/test_homepage_comparison.py"
+        ]
+      },
+      "build": {
+        "build_type": "Release",
+        "cuda_architecture": "89",
+        "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU, 8.9"
+      },
+      "curobo_commit": "8e734f3ced1df898990bcd92de40abce475907db",
+      "curobo_version": "0.8.0.post1.dev42",
+      "planigo_config": {
+        "specification": {
+          "degree": 3,
+          "control_points": 12,
+          "free_control_points": 6,
+          "initial_duration_s": 2.5,
+          "optimizer_waypoints": 61
+        },
+        "solver": {
+          "igo_iterations": 300,
+          "igo_B": 300,
+          "igo_B0": 100,
+          "igo_T0": 151,
+          "igo_dt": 0.35,
+          "control_point_std": 0.25,
+          "duration_adjustment_rounds": 0,
+          "minimum_duration_s": 1.0,
+          "maximum_duration_s": 5.0,
+          "dynamics_time_margin": 1.05,
+          "duration_change_threshold_s": 0.01,
+          "output_retiming": true
+        },
+        "objective": {
+          "path_position_weight": 1.0,
+          "path_orientation_weight": 1.0
+        },
+        "safety": {
+          "environment_clearance": 0.01,
+          "self_clearance": 0.0
+        },
+        "dynamics": {
+          "max_acceleration": 15.0,
+          "max_jerk": 500.0
+        },
+        "runtime": {
+          "voxel_size": 0.02,
+          "evaluation_dt_s": 0.05,
+          "diagnostic_dt_s": 0.025,
+          "position_tolerance": 0.01,
+          "orientation_tolerance": 0.001
+        }
+      },
+      "curobo_config": {
+        "planner": {
+          "interpolation_dt": 0.025,
+          "position_tolerance_m": 0.01,
+          "orientation_tolerance_rad": 0.05,
+          "collision_activation_distance_m": 0.02,
+          "num_ik_seeds": 32,
+          "num_trajopt_seeds": 4,
+          "num_warmup_iterations": 5,
+          "use_cuda_graph": true,
+          "trajopt_max_attempts": 1,
+          "trajopt_enable_graph_attempt": 10,
+          "full_max_attempts": 5,
+          "full_enable_graph_attempt": 1
+        },
+        "evaluation": {
+          "voxel_size": 0.02,
+          "position_tolerance_m": 0.01,
+          "orientation_tolerance_quat": 0.001,
+          "environment_clearance_m": 0.01,
+          "self_clearance_m": 0.0,
+          "max_acceleration": 15.0,
+          "max_jerk": 500.0
+        }
+      },
+      "seed_policy": "Planigo: 42 + problem_index. cuRobo: base 42, reset before every task (native sampler).",
+      "scope": "Identical start/pose-goal tasks and shared final evaluator; native internal IK, collision geometry, seeds and budgets differ.",
+      "timing": "Synchronized host elapsed. planner_time excludes world construction/update and common evaluation; Planigo includes its fixed-goal IK, session creation, retiming and trajectory generation; cuRobo includes native pose planning and interpolated-plan extraction. pipeline_time includes per-task scene setup and final evaluation, excludes amortized planner/evaluator construction and warmup. CUDA event fields are separate scoped GPU timeline measurements, not kernel sums.",
+      "sampling": "Planigo uniform grid with dt <=0.025; cuRobo native interpolation dt=0.025. Distinct grids, same maximum interval. No continuous collision proof.",
+      "gpu_before": "name, temperature.gpu, power.draw [W], clocks.current.sm [MHz], utilization.gpu [%], memory.used [MiB]\nNVIDIA GeForce RTX 4060 Laptop GPU, 40, 6.69 W, 300 MHz, 0 %, 1672 MiB\n",
+      "planner_initialization_time_s": 0.6707297129978542,
+      "warmup_time_s": 3.5671688619986526,
+      "gpu_after": "name, temperature.gpu, power.draw [W], clocks.current.sm [MHz], utilization.gpu [%], memory.used [MiB]\nNVIDIA GeForce RTX 4060 Laptop GPU, 38, 10.84 W, 780 MHz, 0 %, 1852 MiB\n",
+      "complete": true
+    }
+  }
+}
