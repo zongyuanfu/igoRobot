@@ -9,9 +9,9 @@ import sys
 import numpy as np
 import yaml
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
-from website.tools.export_homepage import CASES, WEB, save
+from third_party.website.tools.export_homepage import CASES, WEB, save
 
 
 def robot_data(model):

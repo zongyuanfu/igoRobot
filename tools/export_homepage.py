@@ -9,9 +9,9 @@ import hashlib
 import numpy as np
 import yaml
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
-WEB = ROOT / 'website'
+WEB = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / 'benchmarks/results/cuda/bspline_full_horizon/oob_fix_20261003/full_validation/2026_10_03_23_04_001_mb_igo_tuning'
 CASES = [('box_panda',57,'Box'), ('box_panda_flipped',52,'Box · inverted'),
          ('bookshelf_small_panda',88,'Bookshelf · small'), ('bookshelf_thin_panda',55,'Bookshelf · thin'),

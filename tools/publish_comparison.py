@@ -6,13 +6,13 @@ import json
 import re
 import sys
 
-ROOT=Path(__file__).resolve().parents[2]
+ROOT=Path(__file__).resolve().parents[3]
 sys.path.insert(0,str(ROOT))
 from benchmarks.shared.results import summarize, quantiles
 
 PLANNERS = ("planigo", "curobo_trajopt", "curobo_full")
 
-WEB=ROOT/'website'
+WEB=Path(__file__).resolve().parents[1]
 NAMES={'planigo':'Planigo','curobo_trajopt':'cuRobo · Optimization','curobo_full':'cuRobo · Full'}
 GROUPS={'bookshelf_small_panda':'Bookshelf · small','bookshelf_tall_panda':'Bookshelf · tall',
         'bookshelf_thin_panda':'Bookshelf · thin','box_panda':'Box','box_panda_flipped':'Box · inverted',

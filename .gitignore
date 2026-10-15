@@ -1,0 +1,25 @@
+# Raw planner output; publish only the curated data/ and demos/ exports.
+/source_runs/
+
+# Local Python and browser tooling.
+__pycache__/
+*.py[codz]
+.venv/
+node_modules/
+.pytest_cache/
+.ruff_cache/
+/test-results/
+/playwright-report/
+
+# Local credentials, logs and editor files.
+.env
+.env.*
+!.env.example
+*.log
+*.tmp
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
