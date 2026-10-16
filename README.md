@@ -30,9 +30,10 @@ no Python service or running planner.
 
 ## Data
 
-Benchmark tables use the 13–14 October 2026 RTX 5060 runs: the same 800 problems
-repeated with seeds 42, 142 and 242. The six curated demonstrations are separate
-11 October RTX 4060 Laptop recordings, not a benchmark success-rate sample.
+Benchmark tables and all six interactive trajectories use the 15 October 2026
+RTX 5060 MB800 seed42 batch. Demo optimization times come from those exact saved
+cases. Static preview images and the teaser video retain their 11 October
+recordings. The selected demonstrations are not a benchmark success-rate sample.
 
 See `data/results.json` and `data/comparison.json` for benchmark provenance,
 `data/*-manifest.json` for demo provenance, and `data/mpc.json` for the separate
@@ -48,10 +49,14 @@ from the Planigo root. For example:
 
 ```sh
 uv run --no-sync python third_party/website/tools/publish_current_benchmark.py --help
-uv run --no-sync python third_party/website/tools/export_current_demos.py --help
+uv run --no-sync python third_party/website/tools/export_batch_demos.py \
+  benchmarks/results/robometrics_cpp_mb800_20261015/full_seed42/planigo
 ```
 
-Use a new `--runs-dir` when generating demonstrations to preserve earlier runs.
+The batch exporter validates the scene and control hashes before updating
+demo data. It uses the completed batch and does not run the planner again.
+For independently replanned demos, use `export_current_demos.py` with a new
+`--runs-dir` to preserve earlier runs.
 For browser checks, install Playwright separately or set `PLANIGO_PLAYWRIGHT` to
 an existing installation, then run `node third_party/website/tools/browser_check.mjs`
 against the local preview server.

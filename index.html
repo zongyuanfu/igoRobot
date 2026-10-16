@@ -34,7 +34,7 @@
           <div class="teaser-motion"><a href="#demos" data-case="4"><video id="teaser-video" muted loop playsinline preload="metadata" poster="assets/preview-cage_panda-90.webp" aria-label="Recorded planned Franka motion in the cage scene"><source src="assets/teaser.webm" type="video/webm"></video><span>Cluttered environments</span></a><button id="teaser-toggle" aria-label="Play teaser animation">▶</button></div>
           <a href="#demos" data-case="5"><img src="assets/preview-table_under_pick_panda-14.webp" alt="Franka reaching beneath a table" width="640" height="460"><span>Below the work surface</span></a>
         </div>
-        <figcaption>One representation, different environments. <span>Selected successful trajectories from Robometrics, replayed with the Franka Panda model.</span></figcaption>
+        <figcaption>One representation, different environments. <span>Selected Robometrics motions recorded on 11 October; the interactive viewer below uses the latest benchmark trajectories.</span></figcaption>
       </figure>
     </header>
 
@@ -88,7 +88,7 @@
       <div class="wrap">
         <p class="eyebrow">Interactive trajectories</p><h2 id="demo-title">Motion planning in six environments</h2>
         <p class="section-intro">Select a scene, rotate the view, and follow the arm through its planned motion.</p>
-        <p class="figure-note">Demonstrations replanned on 11 October 2026 with the current 61-sphere model, fixed fingers and 32 optimization waypoints. Toggle collision spheres to inspect the model used for these motions.</p>
+        <p class="figure-note">Demonstrations from the 15 October 2026 RTX 5060 MB800 batch (seed42), using the 61-sphere model, fixed fingers and 32 optimization waypoints. Toggle collision spheres to inspect the model used for these motions.</p>
         <div id="scene-picker" class="scene-picker" role="group" aria-label="Select a successful demonstration"></div>
         <div class="viewer-shell">
           <div class="viewer-heading"><div><span class="status-dot"></span><strong id="scene-title">Loading demonstration</strong><span class="case-label" id="case-label"></span></div><span class="selected-label">Selected successful case</span></div>
@@ -103,7 +103,7 @@
             <aside class="viewer-info">
               <p class="eyebrow">The planned motion</p><p id="scene-description"></p>
               <dl class="case-metrics"><div><dt>Optimization</dt><dd id="case-optimize">—</dd></div><div><dt>Trajectory duration</dt><dd id="case-duration">—</dd></div></dl>
-              <p class="metric-note">Optimization is synchronized host time from the 11 October RTX 4060 Laptop demo export. Duration is physical playback time.</p>
+              <p class="metric-note">Optimization is synchronized host solve time from the same RTX 5060 batch case as the displayed trajectory. Duration is physical playback time.</p>
               <fieldset><legend>Display layers</legend>
                 <label><input id="show-path" type="checkbox" checked> End-effector path</label>
                 <label><input id="show-spheres" type="checkbox"> Collision spheres (61)</label>
@@ -149,7 +149,7 @@
     <section id="results" class="wrap section results" aria-labelledby="results-title">
       <p class="eyebrow">Current experiments · 15 October 2026 · RTX 5060</p><h2 id="results-title">Planigo and cuRobo on 800 planning problems</h2>
       <p class="section-intro">The same Robometrics MB start/pose-goal tasks, evaluated with a shared 61-sphere Franka model, canonical OBB scenes and success policy.</p>
-      <p class="figure-note">Main tables show the 15 October seed42 run. The six interactive demonstrations were generated separately on 11 October; their timings and seeds have their own manifests.</p>
+      <p class="figure-note">Main tables show the 15 October seed42 run. The six interactive demonstrations use saved trajectories and measured optimization times from this same seed42 batch.</p>
       <div class="stat-row">
         <div><strong>83.375<span>%</span></strong><span>Planigo · 667 / 800 successful plans · seed42</span></div>
         <div><strong>86.3<span> ms</span></strong><span>Planigo optimization median · P90 88.8 ms</span></div>
