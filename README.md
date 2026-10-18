@@ -38,10 +38,12 @@ IDs applied to cuRobo. Failed planning on retained tasks remains in the denomina
 records are retained with inclusion flags in `data/comparison-cases.json`.
 
 See `data/comparison.json` for MB and `data/mpinets.json` for MPiNets provenance.
-The six interactive trajectories retain their 15 October batch recordings;
+The six interactive trajectories and their optimization times come from the same
+18 October MB800 batch as the benchmark tables;
 static preview images and the teaser retain their 11 October recordings.
-`data/*-manifest.json` gives their separate provenance. `data/mpc.json` remains
-an archived 80-task sample. These are not measurements from the new runs.
+`data/*-manifest.json` gives the interactive trajectories' provenance. `data/mpc.json`
+remains an archived 80-task sample. Static previews, the teaser and the MPC sample
+are not measurements from the new runs.
 
 Browser playback interpolates recorded joints; it does not perform collision
 validation. These research results do not establish safe real-robot execution.
@@ -64,6 +66,9 @@ matching configurations and batch provenance; do not mix those recordings with
 current benchmark timing.
 For independently replanned demos, use `export_current_demos.py` with a new
 `--runs-dir` to preserve earlier runs.
+For demos from the published batch, use `export_batch_demos.py SOURCE --config CONFIG`
+with a complete configuration saved from that batch's `metadata.json` (`planigo_config`),
+so later changes to shared defaults do not alter the provenance check.
 For browser checks, install Playwright separately or set `PLANIGO_PLAYWRIGHT` to
 an existing installation, then run `node third_party/website/tools/browser_check.mjs`
 against the local preview server.

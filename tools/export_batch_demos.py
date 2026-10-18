@@ -1,6 +1,5 @@
 """Export the six homepage demos directly from a completed MB800 batch."""
 import argparse
-from dataclasses import asdict
 import hashlib
 import json
 from pathlib import Path
@@ -10,13 +9,13 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT))
-from third_party.website.tools.export_homepage import CASES, WEB, save
+from third_party.website.tools.export_homepage import CASES, WEB, save, validate_export_config
 from third_party.website.tools.publish_current_benchmark import public
 
 
-def export(source):
+def export(source, config_path=None):
     import jax.numpy as jnp
-    from benchmarks.shared.config import DEFAULT_IGO_FULL, load_planigo_config
+    from benchmarks.shared.config import DEFAULT_IGO_FULL
     from benchmarks.datasets.canonical_scene import scene_hash
     from planigo.robot.franka import FrankaModel, FRANKA_MAX_VELOCITY
     from planigo.robot.kinematics_jax import forward_kinematics, compute_sphere_positions
@@ -33,8 +32,7 @@ def export(source):
     if meta['model_sha256'] != model.fingerprint or meta['geometry_profile'] != 'canonical_obb_v1':
         raise ValueError('Batch model or geometry differs from the website contract')
     config = meta['planigo_config']
-    if config != asdict(load_planigo_config(DEFAULT_IGO_FULL)):
-        raise ValueError('Batch planner configuration differs from the current configuration')
+    validate_export_config(config_path or DEFAULT_IGO_FULL, config)
     website_result = json.loads((WEB / 'data/results.json').read_text())
     source_hash = hashlib.sha256(raw).hexdigest()
     if website_result['source_sha256'] != source_hash:
@@ -105,4 +103,6 @@ def export(source):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('source', type=Path, help='completed Planigo batch with saved trajectories and scenes')
-    export(parser.parse_args().source)
+    parser.add_argument('--config', type=Path, help='matching planner configuration snapshot (defaults to the current configuration)')
+    args = parser.parse_args()
+    export(args.source, args.config)
