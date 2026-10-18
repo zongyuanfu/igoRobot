@@ -30,16 +30,21 @@ no Python service or running planner.
 
 ## Data
 
-Benchmark tables and all six interactive trajectories use the 15 October 2026
-RTX 5060 MB800 seed42 batch. Demo optimization times come from those exact saved
-cases. Static preview images and the teaser video retain their 11 October
-recordings. The selected demonstrations are not a benchmark success-rate sample.
+Benchmark tables use the 18 October 2026 RTX 5060 seed42 reruns of MB800 and
+MPiNets1800. Planigo uses path-scored IK and C++ CPU evaluation. Rates and timing
+distributions use the Planigo-validated IK cohort, with the same retained task
+IDs applied to cuRobo. Failed planning on retained tasks remains in the denominator.
+`data/ik-exclusions.json` records every excluded task and reason; original case
+records are retained with inclusion flags in `data/comparison-cases.json`.
 
-See `data/results.json` and `data/comparison.json` for benchmark provenance,
-`data/*-manifest.json` for demo provenance, and `data/mpc.json` for the separate
-80-task MPC sample. Browser playback interpolates recorded joints; it does not
-perform collision validation. These research results do not establish safe
-real-robot execution.
+See `data/comparison.json` for MB and `data/mpinets.json` for MPiNets provenance.
+The six interactive trajectories retain their 15 October batch recordings;
+static preview images and the teaser retain their 11 October recordings.
+`data/*-manifest.json` gives their separate provenance. `data/mpc.json` remains
+an archived 80-task sample. These are not measurements from the new runs.
+
+Browser playback interpolates recorded joints; it does not perform collision
+validation. These research results do not establish safe real-robot execution.
 
 ## Maintenance
 
@@ -48,13 +53,15 @@ exporters require the Planigo environment and local experiment results; run them
 from the Planigo root. For example:
 
 ```sh
-uv run --no-sync python third_party/website/tools/publish_current_benchmark.py --help
-uv run --no-sync python third_party/website/tools/export_batch_demos.py \
-  benchmarks/results/robometrics_cpp_mb800_20261015/full_seed42/planigo
+uv run --no-sync python third_party/website/tools/publish_current_benchmark.py \
+  benchmarks/results/website_refresh_20261018
 ```
 
-The batch exporter validates the scene and control hashes before updating
-demo data. It uses the completed batch and does not run the planner again.
+The benchmark exporter validates complete batches, matching scene hashes and
+evaluation policies before writing data. It records exclusion reasons and never
+filters on final trajectory success. Historical demo exporters require their
+matching configurations and batch provenance; do not mix those recordings with
+current benchmark timing.
 For independently replanned demos, use `export_current_demos.py` with a new
 `--runs-dir` to preserve earlier runs.
 For browser checks, install Playwright separately or set `PLANIGO_PLAYWRIGHT` to

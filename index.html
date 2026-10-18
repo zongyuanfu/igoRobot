@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Planigo: GPU-accelerated B-spline motion planning with information-geometric optimization (IGO). Explore six interactive Franka Panda trajectories and results on 800 Robometrics problems.">
+  <meta name="description" content="Planigo: GPU-accelerated B-spline motion planning with information-geometric optimization (IGO). Explore six Franka Panda trajectories and valid-IK benchmark results on MotionBenchMaker and Motion Policy Networks.">
   <meta name="theme-color" content="#fafaf8">
   <title>Planigo — GPU-Accelerated B-spline Motion Planning with IGO</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
@@ -34,7 +34,7 @@
           <div class="teaser-motion"><a href="#demos" data-case="4"><video id="teaser-video" muted loop playsinline preload="metadata" poster="assets/preview-cage_panda-90.webp" aria-label="Recorded planned Franka motion in the cage scene"><source src="assets/teaser.webm" type="video/webm"></video><span>Cluttered environments</span></a><button id="teaser-toggle" aria-label="Play teaser animation">▶</button></div>
           <a href="#demos" data-case="5"><img src="assets/preview-table_under_pick_panda-14.webp" alt="Franka reaching beneath a table" width="640" height="460"><span>Below the work surface</span></a>
         </div>
-        <figcaption>One representation, different environments. <span>Selected Robometrics motions recorded on 11 October; the interactive viewer below uses the latest benchmark trajectories.</span></figcaption>
+        <figcaption>One representation, different environments. <span>Selected Robometrics motions recorded on 11 October; the interactive viewer below uses separately dated benchmark trajectories.</span></figcaption>
       </figure>
     </header>
 
@@ -55,7 +55,7 @@
             <text x="26" y="13">q</text><text x="290" y="129">u</text>
           </svg>
           <h3><span>01</span> Represent the motion</h3>
-          <p>Twelve control points describe a continuous joint-space curve. Six free, seven-dimensional controls are optimized; the endpoints remain fixed.</p>
+          <p>Feasible IK endpoints are ranked by a 64-sample reference-path score. Twelve control points describe a continuous joint-space curve. Six free, seven-dimensional controls are optimized; the endpoints remain fixed.</p>
           <p class="method-detail">Cubic B-spline · 42 optimization variables</p>
         </article>
         <article>
@@ -66,7 +66,7 @@
           </svg>
           <h3><span>02</span> Optimize on the GPU</h3>
           <p>MGIGO samples candidate controls, evaluates their costs at 32 waypoints in parallel, and updates a Gaussian mixture for each free-control block.</p>
-          <p class="method-detail">300 iterations · 300 samples per iteration</p>
+          <p class="method-detail">120 iterations · 300 samples per iteration</p>
         </article>
         <article>
           <svg class="method-figure" viewBox="0 0 320 135" role="img" aria-label="Discrete robot poses along a complete motion, checked against an obstacle, schematic">
@@ -77,11 +77,11 @@
             <text x="28" y="130">start</text><text x="133" y="130">discrete checks</text><text x="267" y="130">goal</text>
           </svg>
           <h3><span>03</span> Evaluate the complete motion</h3>
-          <p>After analytic retiming, evaluate the complete trajectory for goal accuracy, collisions, joint limits and dynamics. The number of evaluation samples grows with the final physical duration, including both endpoints.</p>
+          <p>After analytic retiming, a C++ CPU evaluator checks the complete trajectory for goal accuracy, collisions, joint limits and dynamics. The number of evaluation samples grows with the final physical duration, including both endpoints.</p>
           <p class="method-detail">N = ceil(T / 0.025 s) + 1 · 101 samples for 2.5 s</p>
         </article>
       </div>
-      <p class="figure-note">Current full-horizon method, updated 8 October 2026. Optimization uses 32 waypoints; final evaluation uses a maximum 0.025 s interval. Method illustrations are schematic. Control points live in seven-dimensional joint space, not on the Cartesian end-effector path.</p>
+      <p class="figure-note">Current full-horizon method, updated 2026-10-18. Optimization uses 32 waypoints; final evaluation uses a maximum 0.025 s interval. Method illustrations are schematic. Control points live in seven-dimensional joint space, not on the Cartesian end-effector path.</p>
     </section>
 
     <section id="demos" class="demo-section section" aria-labelledby="demo-title">
@@ -147,46 +147,43 @@
     </section>
 
     <section id="results" class="wrap section results" aria-labelledby="results-title">
-      <p class="eyebrow">Current experiments · 15 October 2026 · RTX 5060</p><h2 id="results-title">Planigo and cuRobo on 800 planning problems</h2>
-      <p class="section-intro">The same Robometrics MB start/pose-goal tasks, evaluated with a shared 61-sphere Franka model, canonical OBB scenes and success policy.</p>
-      <p class="figure-note">Main tables show the 15 October seed42 run. The six interactive demonstrations use saved trajectories and measured optimization times from this same seed42 batch.</p>
+      <p class="eyebrow">Current experiments · 2026-10-18 · RTX 5060</p>
+      <h2 id="results-title">Planning after valid IK</h2>
+      <p class="section-intro">Fresh runs on MotionBenchMaker and Motion Policy Networks, with path-scored IK selection and C++ CPU evaluation.</p>
+      <p class="figure-note">One seed42 run per planner and dataset. These are conditional success rates on a validated-IK cohort; they are not directly comparable to the previous all-task rates.</p>
       <div class="stat-row">
-        <div><strong>83.375<span>%</span></strong><span>Planigo · 667 / 800 successful plans · seed42</span></div>
-        <div><strong>86.3<span> ms</span></strong><span>Planigo optimization median · P90 88.8 ms</span></div>
-        <div><strong>2.073<span> s</span></strong><span>Planned motion duration · median / P90 2.320 s</span></div>
+        <div><strong>92.62<span>%</span></strong><span>MB · 741 / 800 valid-IK tasks</span></div>
+        <div><strong>34.2<span> ms</span></strong><span>MB optimization median · P90 34.9 ms</span></div>
+        <div><strong>91.85<span>%</span></strong><span>MPiNets · 1612 / 1755 valid-IK tasks</span></div>
       </div>
-      <figure class="comparison-overview"><h3>Success and runtime · seed42</h3><div class="table-scroll"><table class="comparison-table"><thead><tr><th scope="col">Planner</th><th scope="col">Shared evaluation</th><th scope="col">Planning · median / P90</th><th scope="col">Pipeline · median / P90</th></tr></thead><tbody><tr><th scope="row">Planigo</th><td>667 / 800</td><td>97.1 / 102.3 ms</td><td>0.204 / 0.271 s</td></tr><tr><th scope="row">cuRobo · Optimization</th><td>615 / 800</td><td>55.7 / 57.6 ms</td><td>0.130 / 0.213 s</td></tr></tbody></table></div>
-      <figcaption>All 800 attempts, including failures. Synchronized host planning includes IK and trajectory production, excluding scene setup and shared evaluation. Pipeline adds per-task scene preparation and evaluation; initialization, warmup and artifact writes are excluded. cuRobo Full was not measured in this run.</figcaption></figure>
-      <div class="results-grid comparison-grid">
-        <figure class="bar-figure"><div class="chart-heading"><h3>Success by scene group · seed42</h3><span>100 problems per group</span></div>
-          <table class="results-table comparison-groups"><thead><tr><th scope="col">Scene</th><th scope="col">Planigo</th><th scope="col">Optimization</th></tr></thead><tbody><tr><th scope="row">Bookshelf · small</th><td><span class="comparison-rate planigo" style="--value:95%"><span>95%</span></span></td><td><span class="comparison-rate curobo_trajopt" style="--value:92%"><span>92%</span></span></td></tr><tr><th scope="row">Bookshelf · tall</th><td><span class="comparison-rate planigo" style="--value:96%"><span>96%</span></span></td><td><span class="comparison-rate curobo_trajopt" style="--value:98%"><span>98%</span></span></td></tr><tr><th scope="row">Bookshelf · thin</th><td><span class="comparison-rate planigo" style="--value:99%"><span>99%</span></span></td><td><span class="comparison-rate curobo_trajopt" style="--value:98%"><span>98%</span></span></td></tr><tr><th scope="row">Box</th><td><span class="comparison-rate planigo" style="--value:100%"><span>100%</span></span></td><td><span class="comparison-rate curobo_trajopt" style="--value:100%"><span>100%</span></span></td></tr><tr><th scope="row">Box · inverted</th><td><span class="comparison-rate planigo" style="--value:92%"><span>92%</span></span></td><td><span class="comparison-rate curobo_trajopt" style="--value:27%"><span>27%</span></span></td></tr><tr><th scope="row">Cage</th><td><span class="comparison-rate planigo" style="--value:79%"><span>79%</span></span></td><td><span class="comparison-rate curobo_trajopt" style="--value:86%"><span>86%</span></span></td></tr><tr><th scope="row">Table pick</th><td><span class="comparison-rate planigo" style="--value:98%"><span>98%</span></span></td><td><span class="comparison-rate curobo_trajopt" style="--value:88%"><span>88%</span></span></td></tr><tr><th scope="row">Under the table</th><td><span class="comparison-rate planigo" style="--value:8%"><span>8%</span></span></td><td><span class="comparison-rate curobo_trajopt" style="--value:26%"><span>26%</span></span></td></tr></tbody></table>
-          <figcaption>Shared evaluation includes every failure. The interactive demonstrations are curated successes, not a six-task benchmark.</figcaption></figure>
-        <aside class="result-discussion"><h3>What is being compared</h3><p>Planigo performs one MGIGO solve followed by analytic retiming. cuRobo Optimization makes one IK + trajectory-optimization attempt using particle optimization and L-BFGS, with graph fallback disabled.</p>
-        <p>Both use canonical robot and scene inputs. Native IK, checker approximations, parameterization, seeding and budgets still differ; this compares configured planning pipelines, not equal-budget optimizers.</p>
-        <h3>Reading the results</h3><p>Planigo passes 92/100 inverted-box tasks; cuRobo Optimization passes 27/100. The under-table group remains difficult: Planigo 8/100, cuRobo 26/100. Planigo’s CPU ESDF construction median is 77.55 ms.</p>
-        <h3>Native and shared success</h3><p>cuRobo reports 651/800 native successes; 615/800 pass the shared acceptance policy. Optimization denotes cuRobo’s particle/L-BFGS mode, distinct from Schulman et al.’s TrajOpt algorithm.</p>
-        <a href="data/comparison-cases.json" download class="text-link">Download 1,600 current case summaries ↓</a></aside>
+      <figure class="comparison-overview"><h3>MotionBenchMaker · seed42</h3>
+          <p>800 valid-IK tasks from 800; 0 excluded before optimization. Both planners use the same retained tasks.</p>
+          <div class="table-scroll"><table class="comparison-table"><thead><tr><th>Planner</th><th>Success · valid IK</th><th>Planning · median / P90</th><th>Pipeline · median / P90</th></tr></thead><tbody><tr><th scope="row">Planigo</th><td>741 / 800 (92.62%)</td><td>42.5 / 44.0 ms</td><td>146.3 / 209.0 ms</td></tr><tr><th scope="row">cuRobo · Optimization</th><td>641 / 800 (80.12%)</td><td>55.3 / 56.3 ms</td><td>130.2 / 219.0 ms</td></tr></tbody></table></div><figcaption>Success and runtime include unsuccessful planning on retained tasks. IK-invalid tasks are excluded from both denominators and timing distributions.</figcaption></figure>
+          <details class="experiment-details"><summary>Success by scene · MotionBenchMaker</summary><div class="table-scroll"><table class="results-table"><thead><tr><th>Scene</th><th>Planigo</th><th>cuRobo · Optimization</th></tr></thead><tbody><tr><th scope="row">Bookshelf · small</th><td>95 / 100 (95.0%)</td><td>96 / 100 (96.0%)</td></tr><tr><th scope="row">Bookshelf · tall</th><td>97 / 100 (97.0%)</td><td>99 / 100 (99.0%)</td></tr><tr><th scope="row">Bookshelf · thin</th><td>100 / 100 (100.0%)</td><td>99 / 100 (99.0%)</td></tr><tr><th scope="row">Box</th><td>100 / 100 (100.0%)</td><td>100 / 100 (100.0%)</td></tr><tr><th scope="row">Box · inverted</th><td>96 / 100 (96.0%)</td><td>28 / 100 (28.0%)</td></tr><tr><th scope="row">Cage</th><td>96 / 100 (96.0%)</td><td>96 / 100 (96.0%)</td></tr><tr><th scope="row">Table pick</th><td>100 / 100 (100.0%)</td><td>95 / 100 (95.0%)</td></tr><tr><th scope="row">Under the table</th><td>57 / 100 (57.0%)</td><td>28 / 100 (28.0%)</td></tr></tbody></table></div></details><figure class="comparison-overview"><h3>Motion Policy Networks · seed42</h3>
+          <p>1,755 valid-IK tasks from 1,800; 45 excluded before optimization. Both planners use the same retained tasks.</p>
+          <div class="table-scroll"><table class="comparison-table"><thead><tr><th>Planner</th><th>Success · valid IK</th><th>Planning · median / P90</th><th>Pipeline · median / P90</th></tr></thead><tbody><tr><th scope="row">Planigo</th><td>1612 / 1755 (91.85%)</td><td>41.7 / 43.2 ms</td><td>162.6 / 328.8 ms</td></tr><tr><th scope="row">cuRobo · Optimization</th><td>1601 / 1755 (91.23%)</td><td>77.4 / 79.4 ms</td><td>190.2 / 359.6 ms</td></tr></tbody></table></div><figcaption>Success and runtime include unsuccessful planning on retained tasks. IK-invalid tasks are excluded from both denominators and timing distributions.</figcaption></figure>
+          <details class="experiment-details"><summary>Success by scene · Motion Policy Networks</summary><div class="table-scroll"><table class="results-table"><thead><tr><th>Scene</th><th>Planigo</th><th>cuRobo · Optimization</th></tr></thead><tbody><tr><th scope="row">cubby_neutral_goal</th><td>73 / 75 (97.3%)</td><td>73 / 75 (97.3%)</td></tr><tr><th scope="row">cubby_neutral_start</th><td>74 / 74 (100.0%)</td><td>73 / 74 (98.6%)</td></tr><tr><th scope="row">cubby_task_oriented</th><td>136 / 148 (91.9%)</td><td>131 / 148 (88.5%)</td></tr><tr><th scope="row">dresser_neutral_goal</th><td>143 / 149 (96.0%)</td><td>141 / 149 (94.6%)</td></tr><tr><th scope="row">dresser_neutral_start</th><td>147 / 150 (98.0%)</td><td>140 / 150 (93.3%)</td></tr><tr><th scope="row">dresser_task_oriented</th><td>245 / 299 (81.9%)</td><td>268 / 299 (89.6%)</td></tr><tr><th scope="row">merged_cubby_neutral_goal</th><td>74 / 75 (98.7%)</td><td>74 / 75 (98.7%)</td></tr><tr><th scope="row">merged_cubby_neutral_start</th><td>75 / 75 (100.0%)</td><td>73 / 75 (97.3%)</td></tr><tr><th scope="row">merged_cubby_task_oriented</th><td>144 / 150 (96.0%)</td><td>140 / 150 (93.3%)</td></tr><tr><th scope="row">tabletop_neutral_goal</th><td>132 / 150 (88.0%)</td><td>132 / 150 (88.0%)</td></tr><tr><th scope="row">tabletop_neutral_start</th><td>132 / 132 (100.0%)</td><td>126 / 132 (95.5%)</td></tr><tr><th scope="row">tabletop_task_oriented</th><td>237 / 278 (85.3%)</td><td>230 / 278 (82.7%)</td></tr></tbody></table></div></details>
+      <div class="setup-grid">
+        <div><h3>Which tasks are counted?</h3><p>A task needs a Planigo IK endpoint that passes the shared pose, collision, map-boundary and joint-limit checks. The same retained task IDs are used for cuRobo. Reference IK can be replaced by a valid cuRobo fallback endpoint.</p>
+        <p>MPiNets excludes 45 tasks and MB excludes 0. This filter uses endpoint feasibility before trajectory optimization, never the final outcome. Every failed trajectory on the retained set still counts as a failure.</p>
+        <p>The cohort depends on Planigo’s IK procedure. cuRobo uses its own internal IK; its native failures on retained tasks remain in the comparison. No unavailable internal status is inferred.</p>
+        <a class="text-link" href="data/ik-exclusions.json">Download excluded task IDs and reasons ↓</a></div>
+        <div><h3>What the timings include</h3><p>Planning is synchronized host time including IK, optimization, retiming and trajectory production. Pipeline adds per-task scene preparation and final evaluation. Warmup, initialization and artifact writes are excluded. All medians and P90 values use the retained tasks, including planning failures.</p>
+        <p>The headline optimization latency is Planigo’s solver scope only. Use the planning and pipeline columns when comparing methods. The previous 15 October page used 300 iterations and 10 mm clearance; this run uses 120 iterations and 5 mm. Timing and success changes are not attributable to the C++ backend alone.</p>
+        <p>Each planner runs in a separate process, sequentially, with one warmup task per scene group. One seed provides no estimate of seed-to-seed variability.</p></div>
       </div>
-      <details class="experiment-details"><summary>Matched successful tasks · seed42 <span>571 tasks passed by both planners</span></summary>
-        <p class="figure-note">Medians on the same 571 tasks. This subset excludes difficult failed tasks; use the full table for aggregate performance.</p>
-        <div class="table-scroll"><table class="comparison-table"><thead><tr><th>Planner</th><th>Planning</th><th>Pipeline</th><th>Planned motion duration</th></tr></thead><tbody><tr><th scope="row">Planigo</th><td>96.7 ms</td><td>0.202 s</td><td>2.067 s</td></tr><tr><th scope="row">cuRobo · Optimization</th><td>56.0 ms</td><td>0.133 s</td><td>2.000 s</td></tr></tbody></table></div></details>
-      <details class="experiment-details"><summary>MPC sample <span>42 / 80 successful tasks · seed42</span></summary>
-        <p class="figure-note">Ten stratified tasks per scene group, with the default 300-iteration initial solve and 150-iteration subsequent solves. Success uses recorded 0.05 s execution states; it is a separate sampling protocol from the full-horizon table.</p>
-        <p>Subsequent cycles including warm start, optimization, diagnostics, prefix execution, Python FK and goal checks: median 54.8 ms, P90 57.3 ms, P99 58.6 ms. 5,413 / 5,413 cycles exceeded the 50 ms execution interval. This configuration did not maintain 20 Hz in the measured sample. Initial IK, map preparation, consumer logging and final evaluation are outside this cycle scope.</p>
-        <a href="data/mpc.json" download class="text-link">Download MPC sample results ↓</a></details>
-      <details class="experiment-details"><summary>Experimental setup &amp; success criteria <span>Reproducibility notes</span></summary>
-        <div class="setup-grid"><dl><dt>Hardware &amp; schedule</dt><dd>RTX 5060 8GB · Ryzen 7 7700 · Release · sm_120 · CUDA 13.2. Isolated planner processes run sequentially, with one warmup task per scene group. Desktop graphics remained active. The planner order changes across seeds.</dd>
-        <dt>Planigo</dt><dd>300 iterations; B=300, B0=100, T0=151; step 0.35; std 0.25 rad. Twelve cubic controls, six free controls, 32 cost waypoints. Solve at 2.5 s, analytically retime with 1.05 margin within [1,5] s. Strict fixed-goal IK; explicit session pool reuses allocations and resets task state. Both planners reset the batch seed before every task.</dd>
-        <dt>cuRobo</dt><dd>Version 0.8.0.post1.dev42, checkout 8e734f3. 32 IK seeds, four trajectory-optimization seeds, native B-spline model, CUDA graphs enabled. One attempt, graph fallback disabled. Native goal tolerances are aligned to the common position and quaternion thresholds.</dd>
-        <dt>Python &amp; CPU evaluation</dt><dd>Python 3.11.14, NumPy 2.4.6; Robometrics C++ ESDF built with GNU 11.4.0, Release and pybind11 3.1.0. Single-thread C++ map construction runs on the CPU. JAX evaluation runs on CPU; OMP, OpenBLAS and MKL use one thread.</dd></dl>
-        <dl><dt>Shared evaluation</dt><dd>Canonical 61-sphere Franka model, 694 self-collision pairs; canonical OBB scene geometry; 0.02 m ESDF voxels. Position error ≤ 0.01 m; quaternion error 1 − |q·q*| ≤ 0.001. Environment clearance ≥ 0.01 m, self clearance ≥ 0; OOB, joint, velocity, acceleration and jerk checks. Acceleration ≤ 15 rad/s²; jerk ≤ 500 rad/s³.</dd>
-        <dt>Sampling &amp; timing limits</dt><dd>Endpoint-inclusive uniform physical grids with maximum 0.025 s interval. IGO uses analytic B-spline derivatives; cuRobo uses quintic Hermite reconstruction of native q/dq/ddq. Pipeline time may include JITs for unseen evaluation shapes. The headline reports optimization only; compare planners using the broader planning column. Discrete checks do not establish continuous safety.</dd>
-        <dt>CUDA event cross-check · seed42</dt><dd>Planigo optimization median / P90: 86.3 / 88.8 ms. Scoped GPU timeline measurements, not kernel-duration sums.</dd>
-        <dt>Source &amp; audit</dt><dd>Planigo commit 8fc3b03; Robometrics commit 6790c84. Two complete seed42 batches; configurations and source metadata are available below. <a href="data/comparison.json">Configurations, provenance and current statistics</a> · <a href="data/benchmark-cases.json">800 Planigo seed42 summaries</a>. Previous RTX 4060 Laptop results used different configs and evaluation, so these are not a pure hardware speedup comparison.</dd></dl></div>
-      </details>
+      <details class="experiment-details"><summary>Configuration and provenance</summary><div class="setup-grid">
+        <dl><dt>Planigo</dt><dd>120 iterations; B=300, B0=100, T0=201; step 0.8; std 0.4 rad. Twelve cubic controls, six free controls, 32 optimization waypoints. One solve with analytic retiming. path_score_v1, 64 reference samples, C++ IK geometry and final evaluation.</dd>
+        <dt>Hardware</dt><dd>RTX 5060 · Release/sm_120 · CPU thread counts fixed to one. Full hardware and binary metadata are included in the download.</dd>
+        <dt>cuRobo</dt><dd>Optimization mode: one native IK + particle/L-BFGS attempt, graph fallback disabled. Internal seeding and collision checks differ from Planigo.</dd></dl>
+        <dl><dt>Shared acceptance</dt><dd>Canonical 61-sphere Franka model and OBB scenes; 0.02 m ESDF voxels; position error ≤ 0.01 m; quaternion error ≤ 0.001; environment clearance ≥ 0.005 m; self clearance ≥ 0.0 m. Acceleration ≤ 15.0 rad/s²; jerk ≤ 500.0 rad/s³. Endpoint-inclusive samples at ≤ 0.025 s, plus OOB, joint and velocity checks.</dd>
+        <dt>Source</dt><dd>Planigo a497d88; Robometrics 0.3.0. Four completed batches; raw records remain available locally. Recorded worktree state and configuration hashes are included with the data. Discrete checks do not establish continuous collision safety.</dd>
+        <dt>Downloads</dt><dd><a href="data/comparison.json">MB statistics and provenance</a> · <a href="data/mpinets.json">MPiNets statistics and provenance</a> · <a href="data/comparison-cases.json">All case records with inclusion flags</a></dd></dl>
+      </div></details>
+      <p class="figure-note">The six interactive demonstrations and the archived MPC sample retain their separately dated recordings; their timings are not measurements from these new runs. <a href="data/mpc.json">Archived MPC sample</a>.</p>
     </section>
 
-    <section class="limits prose section" aria-labelledby="limits-title"><h2 id="limits-title">Scope and limitations</h2><p>Compact control-point optimization and analytic retiming make the planning pipeline straightforward to inspect. The current implementation nevertheless uses soft ranking costs and discrete collision evaluation. Independently selected block means are not guaranteed to form a feasible joint solution.</p><p>There is no swept-volume collision check, mandatory execution gate or validated fallback controller. These are offline research results, not evidence of safe real-robot execution. The current comparison uses one dataset, fixed configurations and seed42. Native IK, checker approximations and budgets limit conclusions about optimizer quality alone.</p><a class="text-link" href="https://github.com/zongyuanfu/planigo/blob/main/docs/bspline_full_horizon.md">Read the implementation notes ↗</a></section>
+    <section class="limits prose section" aria-labelledby="limits-title"><h2 id="limits-title">Scope and limitations</h2><p>Compact control-point optimization and analytic retiming make the planning pipeline straightforward to inspect. The current implementation nevertheless uses soft ranking costs and discrete collision evaluation. Independently selected block means are not guaranteed to form a feasible joint solution.</p><p>There is no swept-volume collision check, mandatory execution gate or validated fallback controller. These are offline research results, not evidence of safe real-robot execution. The current comparison uses two datasets, a shared valid-IK cohort, fixed configurations and seed42. Native IK, checker approximations and budgets limit conclusions about optimizer quality alone.</p><a class="text-link" href="https://github.com/zongyuanfu/planigo/blob/main/docs/bspline_full_horizon.md">Read the implementation notes ↗</a></section>
   </main>
   <footer><div class="wrap"><a class="wordmark" href="#">planigo<span>.</span></a><p>A research implementation of CUDA B-spline trajectory optimization.</p><p>Visual inspiration: <a href="https://nerfies.github.io/">Nerfies</a> and the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template">Academic Project Page Template</a>.<br>Original HTML, CSS and JavaScript. <a href="assets/FRANKA-LICENSE.txt">Franka model license</a> · <a href="vendor/THREE-LICENSE.txt">Three.js license</a></p><a href="https://github.com/zongyuanfu/planigo">View the source ↗</a></div></footer>
 </body>
