@@ -4,8 +4,10 @@ from collections import Counter
 import hashlib
 from html import escape
 import json
+import math
 from pathlib import Path
 import re
+from statistics import median
 import sys
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -99,11 +101,11 @@ def latency(stats):
 def table(report):
     rows = ''.join(f'<tr><th scope="row">{NAMES[p]}</th>'
         f'<td>{r["success"]} / {r["n"]} ({100*r["success"]/r["n"]:.2f}%)</td>'
-        f'<td>{latency(r["planner_time_s"])}</td><td>{latency(r["pipeline_time_s"])}</td></tr>'
+        f'<td>{latency(r["planner_time_s"])}</td></tr>'
         for p, r in report['summaries'].items())
     return ('<div class="table-scroll"><table class="comparison-table"><thead><tr>'
             '<th>Planner</th><th>Success · valid IK</th><th>Planning · median / P90</th>'
-            '<th>Pipeline · median / P90</th></tr></thead><tbody>' + rows + '</tbody></table></div>')
+            '</tr></thead><tbody>' + rows + '</tbody></table></div>')
 
 
 def group_table(report):
@@ -136,23 +138,59 @@ def build(source):
                     m['config_sources']['evaluation']['resolved'] != policy):
                 raise ValueError('Datasets must use the same code and configurations')
     pg = mb['summaries']['planigo']
+    combined_n = sum(report['n'] for report in reports.values())
+    combined_success = {
+        planner: sum(report['summaries'][planner]['success'] for report in reports.values())
+        for planner in PLANNERS
+    }
+    combined_planning = {}
+    for planner in PLANNERS:
+        times = [row['planner_time_s'] for dataset in cases.values()
+                 for row in dataset[planner] if row['included']]
+        if len(times) != combined_n or any(not math.isfinite(t) or t < 0 for t in times):
+            raise ValueError('Combined planning time requires every retained task')
+        combined_planning[planner] = median(times)
+    summary_labels = {
+        planner: NAMES[planner] + (
+            '<small class="summary-setting">4 TO seeds</small>'
+            if planner == 'curobo_trajopt' else ''
+        ) for planner in PLANNERS
+    }
+    success_values = ''.join(
+        f'<div><span class="summary-planner">{summary_labels[planner]}</span>'
+        f'<strong>{100 * count / combined_n:.2f}<small>%</small></strong>'
+        f'<span class="summary-detail">{count:,} / {combined_n:,} tasks</span></div>'
+        for planner, count in combined_success.items()
+    )
+    timing_values = ''.join(
+        f'<div><span class="summary-planner">{summary_labels[planner]}</span>'
+        f'<strong>{seconds * 1000:.1f}<small> ms</small></strong>'
+        f'<span class="summary-detail">median</span></div>'
+        for planner, seconds in combined_planning.items()
+    )
     date = meta['created_at'][:10]
     blocks = []
     for dataset, report in reports.items():
-        blocks.append(f'''<figure class="comparison-overview"><h3>{DATASETS[dataset][0]} · seed42</h3>
-          <p>{report['n']:,} valid-IK tasks from {report['total_n']:,}; {report['excluded_n']:,} excluded before optimization.</p>
+        ik_note = (
+            '<p class="figure-note">Some tasks are excluded because their IK candidates '
+            'fail collision or clearance checks.</p>' if dataset == 'mpinets' else ''
+        )
+        blocks.append(f'''<figure class="comparison-overview"><h3>{DATASETS[dataset][0]}</h3>{ik_note}
           {table(report)}</figure>
           <details class="experiment-details"><summary>Success by scene · {DATASETS[dataset][0]}</summary>{group_table(report)}</details>''')
     section = f'''<section id="results" class="wrap section results" aria-labelledby="results-title">
-      <p class="eyebrow">Experiments · {date} · RTX 5060</p>
+      <p class="eyebrow">RTX 5060 · seed42</p>
       <h2 id="results-title">Benchmark results</h2>
-      <p class="section-intro">Single-seed results on the same Planigo-validated IK tasks; planning failures remain included. The comparison uses cuRobo’s Optimization mode.</p>
-      <p class="figure-note">Times are median / P90. Planning includes IK and trajectory production; pipeline also includes scene preparation and final evaluation.</p>
+      <p class="section-intro">Planigo and cuRobo compared on {combined_n:,} tasks with validated IK endpoints across MotionBenchMaker and MPiNets.</p>
+      <div class="results-summary" aria-label="Combined benchmark comparison">
+        <div class="summary-metric"><h3>Success rate</h3><div class="summary-values">{success_values}</div></div>
+        <div class="summary-metric"><h3>Planning time</h3><div class="summary-values">{timing_values}</div><p class="figure-note">Includes IK, optimization and trajectory generation.</p></div>
+      </div>
       {''.join(blocks)}
       <details class="experiment-details"><summary>Evaluation protocol</summary>
-        <p><strong>Tasks.</strong> Endpoints pass shared pose, collision, map-boundary and joint-limit checks before optimization. MB retains {mb['n']} / {mb['total_n']} tasks; MPiNets retains {mp['n']} / {mp['total_n']}. Both planners are evaluated on those task IDs, including native planning failures. These are conditional success rates, not full-dataset end-to-end rates. <a href="data/ik-exclusions.json">Excluded task IDs and reasons ↓</a></p>
-        <p><strong>Timing.</strong> Synchronized host time; warmup, amortized initialization and file writes are excluded. Per-demo optimization time covers Planigo’s solver only. Full records: <a href="data/comparison.json">MB</a> · <a href="data/mpinets.json">MPiNets</a> · <a href="data/comparison-cases.json">per-task results</a>.</p>
-        <p><strong>Comparison.</strong> One seed42 run per planner and dataset. cuRobo uses one native IK + particle/L-BFGS attempt with graph fallback disabled. Both methods use a shared final discrete evaluator; native IK, seeding and internal collision checks differ.</p>
+        <p><strong>Tasks.</strong> Endpoints pass shared pose, collision, map-boundary and joint-limit checks before optimization. Summary success rates and median planning times pool the retained task records across both datasets. Both planners are evaluated on those task IDs, including native planning failures. Success is measured on tasks with validated IK endpoints. Some MPiNets tasks are excluded because their IK candidates fail collision or clearance checks.</p>
+        <p><strong>Timing.</strong> Synchronized host time; scene preparation, final evaluation, warmup, amortized initialization and file writes are excluded. Per-demo optimization time covers Planigo’s solver only. Full records: <a href="data/comparison.json">MB</a> · <a href="data/mpinets.json">MPiNets</a> · <a href="data/comparison-cases.json">per-task results</a>.</p>
+        <p><strong>Comparison.</strong> Runs dated {date}, with one seed42 run per planner and dataset. cuRobo uses 4 trajectory-optimization seeds within one native planning attempt, with particle/L-BFGS optimization and graph fallback disabled. Both methods use a shared final discrete evaluator; native IK, seeding and internal collision checks differ.</p>
       </details>
     </section>'''
     html, count = re.subn(r'<section id="results".*?</section>', lambda _: section, (WEB/'index.html').read_text(), flags=re.S)

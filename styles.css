@@ -22,3 +22,16 @@
 .chart-card figcaption{font-size:11px;color:var(--muted);line-height:1.6}
 #control-panel .plots-note{margin-top:16px;font-size:11px;color:var(--muted)}
 @media(max-width:640px){#control-panel{padding:18px 12px}.plots-heading{align-items:flex-start;flex-direction:column;gap:4px}.plots-heading h3{font-size:14px}.joint-legend{gap:15px;margin:14px 0 16px;font-size:11px}.chart-card{padding:14px 10px 12px}.chart-card-heading h3{font-size:12px}.chart-card-heading>span{font-size:10px}.chart-card figcaption{font-size:10px}}
+
+/* Compare methods within each metric, independent of the legacy stat grid. */
+.results-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:36px;margin:30px 0 18px}
+.summary-metric{min-width:0;border-block:1px solid var(--line);padding:20px 0 24px}
+.summary-metric h3{font-size:14px;font-weight:550;color:var(--muted);margin-bottom:18px}
+.summary-values{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.summary-values>div{display:flex;min-width:0;flex-direction:column;gap:5px}
+.summary-planner{font-size:12px;line-height:1.5;min-height:3em}
+.summary-setting{display:block;font-size:11px;color:var(--muted)}
+.summary-values strong{font-size:40px;line-height:1.3;font-weight:550;letter-spacing:-1px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.summary-values strong small{font-size:18px;font-weight:450;letter-spacing:0}
+.summary-detail{font-size:11px;color:var(--muted)}
+@media(max-width:760px){.results-summary{grid-template-columns:1fr;gap:16px}.summary-metric{padding:16px 0 20px}.summary-values strong{font-size:34px}.summary-values strong small{font-size:16px}}
