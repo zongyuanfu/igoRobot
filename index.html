@@ -43,10 +43,11 @@
       <p class="section-intro">The offline, full-horizon planner optimizes a complete trajectory from a fixed start to a selected inverse-kinematics (IK) goal.</p>
       <div class="method-grid">
         <article>
-          <svg class="method-figure" viewBox="0 0 320 135" role="img" aria-label="A joint-space B-spline curve and its control polygon, schematic">
-            <path class="axis" d="M25 18V112H298"/><path class="construction" d="m33 97 32 0 29-27 34 13 32-48 36 20 29-28 30 9 36 0"/>
-            <path class="curve" d="M33 97C74 98 83 66 117 76S146 28 183 48 218 31 247 36H291"/>
-            <g class="control-dots"><circle cx="33" cy="97" r="4"/><circle cx="65" cy="97" r="4"/><circle cx="94" cy="70" r="4"/><circle cx="128" cy="83" r="4"/><circle cx="160" cy="35" r="4"/><circle cx="196" cy="55" r="4"/><circle cx="225" cy="27" r="4"/><circle cx="255" cy="36" r="4"/><circle cx="291" cy="36" r="4"/></g>
+          <svg class="method-figure" viewBox="0 0 320 135" role="img" aria-label="Cubic B-spline with twelve control points: six filled free controls and six hollow fixed controls; interior controls generally lie off the curve">
+            <path class="axis" d="M25 18V112H298"/>
+            <path class="construction" d="M30.000 96.000 L39.630 96.000 L58.889 96.000 L87.778 52.000 L116.667 91.000 L145.556 28.000 L174.444 65.000 L203.333 25.000 L232.222 51.000 L261.111 43.000 L280.370 43.000 L290.000 43.000"/>
+            <path class="curve" d="M30 96.000C39.630 96.000 49.259 96.000 58.889 88.667C68.519 81.333 78.148 66.667 87.778 65.833C97.407 65.000 107.037 78.000 116.667 74.000C126.296 70.000 135.926 49.000 145.556 44.667C155.185 40.333 164.815 52.667 174.444 52.167C184.074 51.667 193.704 38.333 203.333 36.000C212.963 33.667 222.593 42.333 232.222 45.333C241.852 48.333 251.481 45.667 261.111 44.333C270.741 43.000 280.370 43.000 290.000 43.000"/>
+            <g class="control-dots"><circle cx="30.000" cy="96.000" r="4"/><circle cx="39.630" cy="96.000" r="4"/><circle cx="58.889" cy="96.000" r="4"/><circle cx="87.778" cy="52.000" r="4" fill="var(--blue)"/><circle cx="116.667" cy="91.000" r="4" fill="var(--blue)"/><circle cx="145.556" cy="28.000" r="4" fill="var(--blue)"/><circle cx="174.444" cy="65.000" r="4" fill="var(--blue)"/><circle cx="203.333" cy="25.000" r="4" fill="var(--blue)"/><circle cx="232.222" cy="51.000" r="4" fill="var(--blue)"/><circle cx="261.111" cy="43.000" r="4"/><circle cx="280.370" cy="43.000" r="4"/><circle cx="290.000" cy="43.000" r="4"/></g>
             <text x="26" y="13">q</text><text x="290" y="129">u</text>
           </svg>
           <h3><span>01</span> Represent the motion</h3>
@@ -65,8 +66,8 @@
         <article>
           <svg class="method-figure" viewBox="0 0 320 135" role="img" aria-label="Discrete trajectory samples feed goal-error, collision and motion-limit checks; schematic, not a pass guarantee">
             <text x="160" y="17" text-anchor="middle">trajectory samples</text>
-            <path class="curve" d="M30 49C48 49 63 32 82 32S115 47 134 47 167 29 186 29 219 41 238 41 271 30 290 30"/>
-            <g class="control-dots"><circle cx="30" cy="49" r="4"/><circle cx="82" cy="32" r="4"/><circle cx="134" cy="47" r="4"/><circle cx="186" cy="29" r="4"/><circle cx="238" cy="41" r="4"/><circle cx="290" cy="30" r="4"/></g>
+            <path class="curve" d="M30 57.320C39.630 57.320 49.259 57.320 58.889 54.240C68.519 51.160 78.148 45.000 87.778 44.650C97.407 44.300 107.037 49.760 116.667 48.080C126.296 46.400 135.926 37.580 145.556 35.760C155.185 33.940 164.815 39.120 174.444 38.910C184.074 38.700 193.704 33.100 203.333 32.120C212.963 31.140 222.593 34.780 232.222 36.040C241.852 37.300 251.481 36.180 261.111 35.620C270.741 35.060 280.370 35.060 290.000 35.060"/>
+            <g fill="var(--blue)" stroke="white" stroke-width="1"><rect x="27.000" y="54.320" width="6" height="6"/><rect x="79.000" y="42.486" width="6" height="6"/><rect x="131.000" y="37.399" width="6" height="6"/><rect x="183.000" y="33.711" width="6" height="6"/><rect x="235.000" y="33.534" width="6" height="6"/><rect x="287.000" y="32.060" width="6" height="6"/></g>
             <g fill="none" stroke="#b0bcc4" stroke-width="1.5">
               <path d="M160 51V68M55 81V68H265V81M160 68V81"/>
               <path d="m51 77 4 4 4-4m97 0 4 4 4-4m97 0 4 4 4-4"/>
@@ -80,7 +81,7 @@
           <p>A shared evaluator checks the output for goal accuracy, collisions, joint limits and dynamics at discrete trajectory samples. These checks determine benchmark success.</p>
         </article>
       </div>
-      <p class="figure-note">Illustrations are schematic. Control points live in joint space, not on the Cartesian end-effector path.</p>
+      <p class="figure-note">Circles: B-spline controls (filled: free; hollow: fixed). Squares: evaluation samples. Illustrations show joint-space curves, not Cartesian paths.</p>
     </section>
 
     <section id="demos" class="demo-section section" aria-labelledby="demo-title">
@@ -165,7 +166,6 @@
 
     <section class="limits prose section" aria-labelledby="limits-title">
       <h2 id="limits-title">Scope and resources</h2>
-      <p>Soft ranking costs and discrete collision checks do not guarantee a feasible trajectory or safe real-robot execution. These offline, single-seed comparisons describe the tested configurations; native IK, collision-checker approximations and planning budgets differ.</p>
       <p>Benchmark scenes are accessed through <a href="https://github.com/zongyuanfu/robometrics">Robometrics ↗</a>, using MotionBenchMaker and Motion Policy Networks datasets.</p>
     </section>
   </main>
