@@ -15,16 +15,16 @@
   <a class="skip" href="#main">Skip to content</a>
   <nav class="navigation" aria-label="Main navigation">
     <a class="wordmark" href="#">planigo<span>.</span></a>
-    <div><a href="#method">Method</a><a href="#demos">Demos</a><a href="#results">Results</a><a href="https://github.com/zongyuanfu/planigo">GitHub ↗</a></div>
+    <div><a href="#method">Method</a><a href="#demos">Demos</a><a href="#results">Results</a></div>
   </nav>
   <main id="main">
     <header class="hero wrap">
       <p class="eyebrow">Robot motion planning · Research project</p>
       <h1>Planigo</h1>
       <p class="subtitle">GPU-Accelerated B-spline Motion Planning<br>with Information-Geometric Optimization (IGO)</p>
-      <p class="hero-description">Optimize a compact curve. Recover a complete motion.<br>A single GPU solve, followed by analytic retiming.</p>
+      <p class="hero-description">Planigo plans complete robot-arm motions through clutter by optimizing joint-space B-spline control points on the GPU.</p>
       <div class="hero-links">
-        <a class="button dark" href="https://github.com/zongyuanfu/planigo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5-7 7 7 7m8-14 7 7-7 7m-3-16-2 18"/></svg>Code</a>
+        <span class="button" aria-disabled="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5-7 7 7 7m8-14 7 7-7 7m-3-16-2 18"/></svg>Code — coming soon</span>
         <a class="button" href="#demos">Explore the demos <span aria-hidden="true">↓</span></a>
         <a class="button" href="#results">Experimental results</a>
       </div>
@@ -34,18 +34,13 @@
           <div class="teaser-motion"><a href="#demos" data-case="4"><video id="teaser-video" muted loop playsinline preload="metadata" poster="assets/preview-cage_panda-90.webp" aria-label="Recorded planned Franka motion in the cage scene"><source src="assets/teaser.webm" type="video/webm"></video><span>Cluttered environments</span></a><button id="teaser-toggle" aria-label="Play teaser animation">▶</button></div>
           <a href="#demos" data-case="5"><img src="assets/preview-table_under_pick_panda-14.webp" alt="Franka reaching beneath a table" width="640" height="460"><span>Below the work surface</span></a>
         </div>
-        <figcaption>One representation, different environments. <span>Selected Robometrics motions recorded on 11 October; the interactive viewer below uses separately dated benchmark trajectories.</span></figcaption>
+        <figcaption>Selected offline plans in cluttered environments. <span>Teaser recordings: 11 October 2026.</span></figcaption>
       </figure>
     </header>
 
-    <section class="abstract prose" aria-labelledby="abstract-title">
-      <h2 id="abstract-title">Motion planning in control-point space</h2>
-      <p>Planning an arm motion means finding a path through obstacles while accounting for joint and motion limits. Planigo represents the whole motion as a cubic B-spline in joint space and optimizes its free control points on the GPU using mixture-model information-geometric optimization (MGIGO). After a single solve, analytic retiming adjusts the trajectory duration without changing its geometry.</p>
-      <p>This page presents the <strong>offline, full-horizon planner</strong>: a complete trajectory from a fixed start to a selected inverse-kinematics goal. The demonstrations below replay precomputed plans; the browser does not run the optimizer.</p>
-    </section>
-
     <section id="method" class="wrap section method" aria-labelledby="method-title">
-      <p class="eyebrow">Method</p><h2 id="method-title">From a compact curve to a complete motion</h2>
+      <p class="eyebrow">Method</p><h2 id="method-title">Motion planning in control-point space</h2>
+      <p class="section-intro">The offline, full-horizon planner optimizes a complete trajectory from a fixed start to a selected inverse-kinematics (IK) goal.</p>
       <div class="method-grid">
         <article>
           <svg class="method-figure" viewBox="0 0 320 135" role="img" aria-label="A joint-space B-spline curve and its control polygon, schematic">
@@ -55,8 +50,8 @@
             <text x="26" y="13">q</text><text x="290" y="129">u</text>
           </svg>
           <h3><span>01</span> Represent the motion</h3>
-          <p>Feasible IK endpoints are ranked by a 64-sample reference-path score. Twelve control points describe a continuous joint-space curve. Six free, seven-dimensional controls are optimized; the endpoints remain fixed.</p>
-          <p class="method-detail">Cubic B-spline · 42 optimization variables</p>
+          <p>A cubic B-spline represents the joint-space motion. Six free controls, each containing seven joint values, define the search space while the endpoints remain fixed.</p>
+          <p class="method-detail">42 optimization variables</p>
         </article>
         <article>
           <svg class="method-figure" viewBox="0 0 320 135" role="img" aria-label="Parallel candidates converge through sampling, scoring and distribution updates, schematic">
@@ -65,30 +60,34 @@
             <text x="28" y="126">sample</text><text x="123" y="126">evaluate</text><text x="238" y="126">update</text>
           </svg>
           <h3><span>02</span> Optimize on the GPU</h3>
-          <p>MGIGO samples candidate controls, evaluates their costs at 32 waypoints in parallel, and updates a Gaussian mixture for each free-control block.</p>
-          <p class="method-detail">120 iterations · 300 samples per iteration</p>
+          <p>Mixture-model information-geometric optimization (MGIGO) samples candidate controls, scores them in parallel, and updates a Gaussian mixture for each free-control block.</p>
         </article>
         <article>
-          <svg class="method-figure" viewBox="0 0 320 135" role="img" aria-label="Discrete robot poses along a complete motion, checked against an obstacle, schematic">
-            <rect x="178" y="67" width="63" height="42" fill="#e5eaed" stroke="#b0bcc4"/>
-            <path class="construction" d="M64 109 90 57 138 29 171 46M64 109 113 72 166 33 204 42M64 109 133 86 205 47 254 56"/>
-            <path class="curve" d="M171 46C208 28 237 36 254 56"/>
-            <g class="control-dots"><circle cx="64" cy="109" r="7"/><circle cx="90" cy="57" r="6"/><circle cx="138" cy="29" r="6"/><circle cx="113" cy="72" r="6"/><circle cx="166" cy="33" r="6"/><circle cx="133" cy="86" r="6"/><circle cx="205" cy="47" r="6"/></g>
-            <text x="28" y="130">start</text><text x="133" y="130">discrete checks</text><text x="267" y="130">goal</text>
+          <svg class="method-figure" viewBox="0 0 320 135" role="img" aria-label="Discrete trajectory samples feed goal-error, collision and motion-limit checks; schematic, not a pass guarantee">
+            <text x="160" y="17" text-anchor="middle">trajectory samples</text>
+            <path class="curve" d="M30 49C48 49 63 32 82 32S115 47 134 47 167 29 186 29 219 41 238 41 271 30 290 30"/>
+            <g class="control-dots"><circle cx="30" cy="49" r="4"/><circle cx="82" cy="32" r="4"/><circle cx="134" cy="47" r="4"/><circle cx="186" cy="29" r="4"/><circle cx="238" cy="41" r="4"/><circle cx="290" cy="30" r="4"/></g>
+            <g fill="none" stroke="#b0bcc4" stroke-width="1.5">
+              <path d="M160 51V68M55 81V68H265V81M160 68V81"/>
+              <path d="m51 77 4 4 4-4m97 0 4 4 4-4m97 0 4 4 4-4"/>
+              <rect x="12" y="88" width="86" height="31" rx="5"/>
+              <rect x="117" y="88" width="86" height="31" rx="5"/>
+              <rect x="222" y="88" width="86" height="31" rx="5"/>
+            </g>
+            <g text-anchor="middle"><text x="55" y="108">goal error</text><text x="160" y="108">collision</text><text x="265" y="108">limits</text></g>
           </svg>
-          <h3><span>03</span> Evaluate the complete motion</h3>
-          <p>After analytic retiming, a C++ CPU evaluator checks the complete trajectory for goal accuracy, collisions, joint limits and dynamics. The number of evaluation samples grows with the final physical duration, including both endpoints.</p>
-          <p class="method-detail">N = ceil(T / 0.025 s) + 1 · 101 samples for 2.5 s</p>
+          <h3><span>03</span> Assess the output</h3>
+          <p>A shared evaluator checks the output for goal accuracy, collisions, joint limits and dynamics at discrete trajectory samples. These checks determine benchmark success.</p>
         </article>
       </div>
-      <p class="figure-note">Current full-horizon method, updated 2026-10-18. Optimization uses 32 waypoints; final evaluation uses a maximum 0.025 s interval. Method illustrations are schematic. Control points live in seven-dimensional joint space, not on the Cartesian end-effector path.</p>
+      <p class="figure-note">Illustrations are schematic. Control points live in joint space, not on the Cartesian end-effector path.</p>
     </section>
 
     <section id="demos" class="demo-section section" aria-labelledby="demo-title">
       <div class="wrap">
         <p class="eyebrow">Interactive trajectories</p><h2 id="demo-title">Motion planning in six environments</h2>
         <p class="section-intro">Select a scene, rotate the view, and follow the arm through its planned motion.</p>
-        <p class="figure-note">Demonstrations from the 15 October 2026 RTX 5060 MB800 batch (seed42), using the 61-sphere model, fixed fingers and 32 optimization waypoints. Toggle collision spheres to inspect the model used for these motions.</p>
+        <p class="figure-note">Six selected successful plans from the 18 October 2026 MB800 batch. Precomputed playback; aggregate performance is reported below.</p>
         <div id="scene-picker" class="scene-picker" role="group" aria-label="Select a successful demonstration"></div>
         <div class="viewer-shell">
           <div class="viewer-heading"><div><span class="status-dot"></span><strong id="scene-title">Loading demonstration</strong><span class="case-label" id="case-label"></span></div><span class="selected-label">Selected successful case</span></div>
@@ -102,12 +101,12 @@
             </div>
             <aside class="viewer-info">
               <p class="eyebrow">The planned motion</p><p id="scene-description"></p>
-              <dl class="case-metrics"><div><dt>Optimization</dt><dd id="case-optimize">—</dd></div><div><dt>Trajectory duration</dt><dd id="case-duration">—</dd></div></dl>
-              <p class="metric-note">Optimization is synchronized host solve time from the same RTX 5060 batch case as the displayed trajectory. Duration is physical playback time.</p>
+              <dl class="case-metrics"><div><dt>Optimization time</dt><dd id="case-optimize">—</dd></div><div><dt>Motion duration</dt><dd id="case-duration">—</dd></div></dl>
+              <p class="metric-note">Host solve time on RTX 5060; motion duration is physical playback time.</p>
               <fieldset><legend>Display layers</legend>
                 <label><input id="show-path" type="checkbox" checked> End-effector path</label>
                 <label><input id="show-spheres" type="checkbox"> Collision spheres (61)</label>
-                <label><input id="show-controls" type="checkbox" checked> Joint trajectories &amp; dynamics</label>
+                <label><input id="show-controls" type="checkbox"> Joint trajectories &amp; dynamics</label>
               </fieldset>
               <a id="manifest-link" class="text-link" href="data/cases.json" download>Case data &amp; provenance ↗</a>
             </aside>
@@ -118,7 +117,7 @@
             <output id="clock" for="timeline">0.00 / — s</output>
             <label class="sr-only" for="speed">Playback speed</label><select id="speed" aria-label="Playback speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select>
           </div>
-          <div id="control-panel">
+          <div id="control-panel" hidden>
             <div class="plots-heading"><h3>Joint trajectories &amp; dynamics</h3><span>All seven joints · shared time axis</span></div>
             <div id="joint-legend" class="joint-legend" aria-label="Joint colors"></div>
             <div class="trajectory-plots">
@@ -141,50 +140,35 @@
             <p class="plots-note">Shaded bands show the ±1 dynamics limits. The vertical cursor follows playback.</p>
           </div>
         </div>
-        <p class="figure-note">These six successful examples are curated for inspection. They do not represent the full benchmark success rate. Playback interpolates recorded joint states; collision results come from the original evaluator.</p>
         <noscript><p>Enable JavaScript to explore the 3D trajectories. The preview images and experimental results remain available below.</p></noscript>
       </div>
     </section>
 
     <section id="results" class="wrap section results" aria-labelledby="results-title">
-      <p class="eyebrow">Current experiments · 2026-10-18 · RTX 5060</p>
-      <h2 id="results-title">Planning after valid IK</h2>
-      <p class="section-intro">Fresh runs on MotionBenchMaker and Motion Policy Networks, with path-scored IK selection and C++ CPU evaluation.</p>
-      <p class="figure-note">One seed42 run per planner and dataset. These are conditional success rates on a validated-IK cohort; they are not directly comparable to the previous all-task rates.</p>
-      <div class="stat-row">
-        <div><strong>92.62<span>%</span></strong><span>MB · 741 / 800 valid-IK tasks</span></div>
-        <div><strong>34.2<span> ms</span></strong><span>MB optimization median · P90 34.9 ms</span></div>
-        <div><strong>91.85<span>%</span></strong><span>MPiNets · 1612 / 1755 valid-IK tasks</span></div>
-      </div>
+      <p class="eyebrow">Experiments · 2026-10-18 · RTX 5060</p>
+      <h2 id="results-title">Benchmark results</h2>
+      <p class="section-intro">Single-seed results on the same Planigo-validated IK tasks; planning failures remain included. The comparison uses cuRobo’s Optimization mode.</p>
+      <p class="figure-note">Times are median / P90. Planning includes IK and trajectory production; pipeline also includes scene preparation and final evaluation.</p>
       <figure class="comparison-overview"><h3>MotionBenchMaker · seed42</h3>
-          <p>800 valid-IK tasks from 800; 0 excluded before optimization. Both planners use the same retained tasks.</p>
-          <div class="table-scroll"><table class="comparison-table"><thead><tr><th>Planner</th><th>Success · valid IK</th><th>Planning · median / P90</th><th>Pipeline · median / P90</th></tr></thead><tbody><tr><th scope="row">Planigo</th><td>741 / 800 (92.62%)</td><td>42.5 / 44.0 ms</td><td>146.3 / 209.0 ms</td></tr><tr><th scope="row">cuRobo · Optimization</th><td>641 / 800 (80.12%)</td><td>55.3 / 56.3 ms</td><td>130.2 / 219.0 ms</td></tr></tbody></table></div><figcaption>Success and runtime include unsuccessful planning on retained tasks. IK-invalid tasks are excluded from both denominators and timing distributions.</figcaption></figure>
+          <p>800 valid-IK tasks from 800; 0 excluded before optimization.</p>
+          <div class="table-scroll"><table class="comparison-table"><thead><tr><th>Planner</th><th>Success · valid IK</th><th>Planning · median / P90</th><th>Pipeline · median / P90</th></tr></thead><tbody><tr><th scope="row">Planigo</th><td>741 / 800 (92.62%)</td><td>42.5 / 44.0 ms</td><td>146.3 / 209.0 ms</td></tr><tr><th scope="row">cuRobo · Optimization</th><td>641 / 800 (80.12%)</td><td>55.3 / 56.3 ms</td><td>130.2 / 219.0 ms</td></tr></tbody></table></div></figure>
           <details class="experiment-details"><summary>Success by scene · MotionBenchMaker</summary><div class="table-scroll"><table class="results-table"><thead><tr><th>Scene</th><th>Planigo</th><th>cuRobo · Optimization</th></tr></thead><tbody><tr><th scope="row">Bookshelf · small</th><td>95 / 100 (95.0%)</td><td>96 / 100 (96.0%)</td></tr><tr><th scope="row">Bookshelf · tall</th><td>97 / 100 (97.0%)</td><td>99 / 100 (99.0%)</td></tr><tr><th scope="row">Bookshelf · thin</th><td>100 / 100 (100.0%)</td><td>99 / 100 (99.0%)</td></tr><tr><th scope="row">Box</th><td>100 / 100 (100.0%)</td><td>100 / 100 (100.0%)</td></tr><tr><th scope="row">Box · inverted</th><td>96 / 100 (96.0%)</td><td>28 / 100 (28.0%)</td></tr><tr><th scope="row">Cage</th><td>96 / 100 (96.0%)</td><td>96 / 100 (96.0%)</td></tr><tr><th scope="row">Table pick</th><td>100 / 100 (100.0%)</td><td>95 / 100 (95.0%)</td></tr><tr><th scope="row">Under the table</th><td>57 / 100 (57.0%)</td><td>28 / 100 (28.0%)</td></tr></tbody></table></div></details><figure class="comparison-overview"><h3>Motion Policy Networks · seed42</h3>
-          <p>1,755 valid-IK tasks from 1,800; 45 excluded before optimization. Both planners use the same retained tasks.</p>
-          <div class="table-scroll"><table class="comparison-table"><thead><tr><th>Planner</th><th>Success · valid IK</th><th>Planning · median / P90</th><th>Pipeline · median / P90</th></tr></thead><tbody><tr><th scope="row">Planigo</th><td>1612 / 1755 (91.85%)</td><td>41.7 / 43.2 ms</td><td>162.6 / 328.8 ms</td></tr><tr><th scope="row">cuRobo · Optimization</th><td>1601 / 1755 (91.23%)</td><td>77.4 / 79.4 ms</td><td>190.2 / 359.6 ms</td></tr></tbody></table></div><figcaption>Success and runtime include unsuccessful planning on retained tasks. IK-invalid tasks are excluded from both denominators and timing distributions.</figcaption></figure>
+          <p>1,755 valid-IK tasks from 1,800; 45 excluded before optimization.</p>
+          <div class="table-scroll"><table class="comparison-table"><thead><tr><th>Planner</th><th>Success · valid IK</th><th>Planning · median / P90</th><th>Pipeline · median / P90</th></tr></thead><tbody><tr><th scope="row">Planigo</th><td>1612 / 1755 (91.85%)</td><td>41.7 / 43.2 ms</td><td>162.6 / 328.8 ms</td></tr><tr><th scope="row">cuRobo · Optimization</th><td>1601 / 1755 (91.23%)</td><td>77.4 / 79.4 ms</td><td>190.2 / 359.6 ms</td></tr></tbody></table></div></figure>
           <details class="experiment-details"><summary>Success by scene · Motion Policy Networks</summary><div class="table-scroll"><table class="results-table"><thead><tr><th>Scene</th><th>Planigo</th><th>cuRobo · Optimization</th></tr></thead><tbody><tr><th scope="row">cubby_neutral_goal</th><td>73 / 75 (97.3%)</td><td>73 / 75 (97.3%)</td></tr><tr><th scope="row">cubby_neutral_start</th><td>74 / 74 (100.0%)</td><td>73 / 74 (98.6%)</td></tr><tr><th scope="row">cubby_task_oriented</th><td>136 / 148 (91.9%)</td><td>131 / 148 (88.5%)</td></tr><tr><th scope="row">dresser_neutral_goal</th><td>143 / 149 (96.0%)</td><td>141 / 149 (94.6%)</td></tr><tr><th scope="row">dresser_neutral_start</th><td>147 / 150 (98.0%)</td><td>140 / 150 (93.3%)</td></tr><tr><th scope="row">dresser_task_oriented</th><td>245 / 299 (81.9%)</td><td>268 / 299 (89.6%)</td></tr><tr><th scope="row">merged_cubby_neutral_goal</th><td>74 / 75 (98.7%)</td><td>74 / 75 (98.7%)</td></tr><tr><th scope="row">merged_cubby_neutral_start</th><td>75 / 75 (100.0%)</td><td>73 / 75 (97.3%)</td></tr><tr><th scope="row">merged_cubby_task_oriented</th><td>144 / 150 (96.0%)</td><td>140 / 150 (93.3%)</td></tr><tr><th scope="row">tabletop_neutral_goal</th><td>132 / 150 (88.0%)</td><td>132 / 150 (88.0%)</td></tr><tr><th scope="row">tabletop_neutral_start</th><td>132 / 132 (100.0%)</td><td>126 / 132 (95.5%)</td></tr><tr><th scope="row">tabletop_task_oriented</th><td>237 / 278 (85.3%)</td><td>230 / 278 (82.7%)</td></tr></tbody></table></div></details>
-      <div class="setup-grid">
-        <div><h3>Which tasks are counted?</h3><p>A task needs a Planigo IK endpoint that passes the shared pose, collision, map-boundary and joint-limit checks. The same retained task IDs are used for cuRobo. Reference IK can be replaced by a valid cuRobo fallback endpoint.</p>
-        <p>MPiNets excludes 45 tasks and MB excludes 0. This filter uses endpoint feasibility before trajectory optimization, never the final outcome. Every failed trajectory on the retained set still counts as a failure.</p>
-        <p>The cohort depends on Planigo’s IK procedure. cuRobo uses its own internal IK; its native failures on retained tasks remain in the comparison. No unavailable internal status is inferred.</p>
-        <a class="text-link" href="data/ik-exclusions.json">Download excluded task IDs and reasons ↓</a></div>
-        <div><h3>What the timings include</h3><p>Planning is synchronized host time including IK, optimization, retiming and trajectory production. Pipeline adds per-task scene preparation and final evaluation. Warmup, initialization and artifact writes are excluded. All medians and P90 values use the retained tasks, including planning failures.</p>
-        <p>The headline optimization latency is Planigo’s solver scope only. Use the planning and pipeline columns when comparing methods. The previous 15 October page used 300 iterations and 10 mm clearance; this run uses 120 iterations and 5 mm. Timing and success changes are not attributable to the C++ backend alone.</p>
-        <p>Each planner runs in a separate process, sequentially, with one warmup task per scene group. One seed provides no estimate of seed-to-seed variability.</p></div>
-      </div>
-      <details class="experiment-details"><summary>Configuration and provenance</summary><div class="setup-grid">
-        <dl><dt>Planigo</dt><dd>120 iterations; B=300, B0=100, T0=201; step 0.8; std 0.4 rad. Twelve cubic controls, six free controls, 32 optimization waypoints. One solve with analytic retiming. path_score_v1, 64 reference samples, C++ IK geometry and final evaluation.</dd>
-        <dt>Hardware</dt><dd>RTX 5060 · Release/sm_120 · CPU thread counts fixed to one. Full hardware and binary metadata are included in the download.</dd>
-        <dt>cuRobo</dt><dd>Optimization mode: one native IK + particle/L-BFGS attempt, graph fallback disabled. Internal seeding and collision checks differ from Planigo.</dd></dl>
-        <dl><dt>Shared acceptance</dt><dd>Canonical 61-sphere Franka model and OBB scenes; 0.02 m ESDF voxels; position error ≤ 0.01 m; quaternion error ≤ 0.001; environment clearance ≥ 0.005 m; self clearance ≥ 0.0 m. Acceleration ≤ 15.0 rad/s²; jerk ≤ 500.0 rad/s³. Endpoint-inclusive samples at ≤ 0.025 s, plus OOB, joint and velocity checks.</dd>
-        <dt>Source</dt><dd>Planigo a497d88; Robometrics 0.3.0. Four completed batches; raw records remain available locally. Recorded worktree state and configuration hashes are included with the data. Discrete checks do not establish continuous collision safety.</dd>
-        <dt>Downloads</dt><dd><a href="data/comparison.json">MB statistics and provenance</a> · <a href="data/mpinets.json">MPiNets statistics and provenance</a> · <a href="data/comparison-cases.json">All case records with inclusion flags</a></dd></dl>
-      </div></details>
-      <p class="figure-note">The six interactive demonstrations and the archived MPC sample retain their separately dated recordings; their timings are not measurements from these new runs. <a href="data/mpc.json">Archived MPC sample</a>.</p>
+      <details class="experiment-details"><summary>Evaluation protocol</summary>
+        <p><strong>Tasks.</strong> Endpoints pass shared pose, collision, map-boundary and joint-limit checks before optimization. MB retains 800 / 800 tasks; MPiNets retains 1755 / 1800. Both planners are evaluated on those task IDs, including native planning failures. These are conditional success rates, not full-dataset end-to-end rates. <a href="data/ik-exclusions.json">Excluded task IDs and reasons ↓</a></p>
+        <p><strong>Timing.</strong> Synchronized host time; warmup, amortized initialization and file writes are excluded. Per-demo optimization time covers Planigo’s solver only. Full records: <a href="data/comparison.json">MB</a> · <a href="data/mpinets.json">MPiNets</a> · <a href="data/comparison-cases.json">per-task results</a>.</p>
+        <p><strong>Comparison.</strong> One seed42 run per planner and dataset. cuRobo uses one native IK + particle/L-BFGS attempt with graph fallback disabled. Both methods use a shared final discrete evaluator; native IK, seeding and internal collision checks differ.</p>
+      </details>
     </section>
 
-    <section class="limits prose section" aria-labelledby="limits-title"><h2 id="limits-title">Scope and limitations</h2><p>Compact control-point optimization and analytic retiming make the planning pipeline straightforward to inspect. The current implementation nevertheless uses soft ranking costs and discrete collision evaluation. Independently selected block means are not guaranteed to form a feasible joint solution.</p><p>There is no swept-volume collision check, mandatory execution gate or validated fallback controller. These are offline research results, not evidence of safe real-robot execution. The current comparison uses two datasets, a shared valid-IK cohort, fixed configurations and seed42. Native IK, checker approximations and budgets limit conclusions about optimizer quality alone.</p><a class="text-link" href="https://github.com/zongyuanfu/planigo/blob/main/docs/bspline_full_horizon.md">Read the implementation notes ↗</a></section>
+    <section class="limits prose section" aria-labelledby="limits-title">
+      <h2 id="limits-title">Scope and resources</h2>
+      <p>Soft ranking costs and discrete collision checks do not guarantee a feasible trajectory or safe real-robot execution. These offline, single-seed comparisons describe the tested configurations; native IK, collision-checker approximations and planning budgets differ.</p>
+      <p>Benchmark scenes are accessed through <a href="https://github.com/zongyuanfu/robometrics">Robometrics ↗</a>, using MotionBenchMaker and Motion Policy Networks datasets.</p>
+    </section>
   </main>
-  <footer><div class="wrap"><a class="wordmark" href="#">planigo<span>.</span></a><p>A research implementation of CUDA B-spline trajectory optimization.</p><p>Visual inspiration: <a href="https://nerfies.github.io/">Nerfies</a> and the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template">Academic Project Page Template</a>.<br>Original HTML, CSS and JavaScript. <a href="assets/FRANKA-LICENSE.txt">Franka model license</a> · <a href="vendor/THREE-LICENSE.txt">Three.js license</a></p><a href="https://github.com/zongyuanfu/planigo">View the source ↗</a></div></footer>
+  <footer><div class="wrap"><a class="wordmark" href="#">planigo<span>.</span></a></div></footer>
 </body>
 </html>

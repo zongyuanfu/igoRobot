@@ -140,56 +140,24 @@ def build(source):
     blocks = []
     for dataset, report in reports.items():
         blocks.append(f'''<figure class="comparison-overview"><h3>{DATASETS[dataset][0]} · seed42</h3>
-          <p>{report['n']:,} valid-IK tasks from {report['total_n']:,}; {report['excluded_n']:,} excluded before optimization. Both planners use the same retained tasks.</p>
-          {table(report)}<figcaption>Success and runtime include unsuccessful planning on retained tasks. IK-invalid tasks are excluded from both denominators and timing distributions.</figcaption></figure>
+          <p>{report['n']:,} valid-IK tasks from {report['total_n']:,}; {report['excluded_n']:,} excluded before optimization.</p>
+          {table(report)}</figure>
           <details class="experiment-details"><summary>Success by scene · {DATASETS[dataset][0]}</summary>{group_table(report)}</details>''')
     section = f'''<section id="results" class="wrap section results" aria-labelledby="results-title">
-      <p class="eyebrow">Current experiments · {date} · RTX 5060</p>
-      <h2 id="results-title">Planning after valid IK</h2>
-      <p class="section-intro">Fresh runs on MotionBenchMaker and Motion Policy Networks, with path-scored IK selection and C++ CPU evaluation.</p>
-      <p class="figure-note">One seed42 run per planner and dataset. These are conditional success rates on a validated-IK cohort; they are not directly comparable to the previous all-task rates.</p>
-      <div class="stat-row">
-        <div><strong>{100*pg['success']/pg['n']:.2f}<span>%</span></strong><span>MB · {pg['success']} / {pg['n']} valid-IK tasks</span></div>
-        <div><strong>{pg['optimize_time_s']['median']*1000:.1f}<span> ms</span></strong><span>MB optimization median · P90 {pg['optimize_time_s']['p90']*1000:.1f} ms</span></div>
-        <div><strong>{100*mp['summaries']['planigo']['success']/mp['n']:.2f}<span>%</span></strong><span>MPiNets · {mp['summaries']['planigo']['success']} / {mp['n']} valid-IK tasks</span></div>
-      </div>
+      <p class="eyebrow">Experiments · {date} · RTX 5060</p>
+      <h2 id="results-title">Benchmark results</h2>
+      <p class="section-intro">Single-seed results on the same Planigo-validated IK tasks; planning failures remain included. The comparison uses cuRobo’s Optimization mode.</p>
+      <p class="figure-note">Times are median / P90. Planning includes IK and trajectory production; pipeline also includes scene preparation and final evaluation.</p>
       {''.join(blocks)}
-      <div class="setup-grid">
-        <div><h3>Which tasks are counted?</h3><p>A task needs a Planigo IK endpoint that passes the shared pose, collision, map-boundary and joint-limit checks. The same retained task IDs are used for cuRobo. Reference IK can be replaced by a valid cuRobo fallback endpoint.</p>
-        <p>MPiNets excludes {mp['excluded_n']} tasks and MB excludes {mb['excluded_n']}. This filter uses endpoint feasibility before trajectory optimization, never the final outcome. Every failed trajectory on the retained set still counts as a failure.</p>
-        <p>The cohort depends on Planigo’s IK procedure. cuRobo uses its own internal IK; its native failures on retained tasks remain in the comparison. No unavailable internal status is inferred.</p>
-        <a class="text-link" href="data/ik-exclusions.json">Download excluded task IDs and reasons ↓</a></div>
-        <div><h3>What the timings include</h3><p>Planning is synchronized host time including IK, optimization, retiming and trajectory production. Pipeline adds per-task scene preparation and final evaluation. Warmup, initialization and artifact writes are excluded. All medians and P90 values use the retained tasks, including planning failures.</p>
-        <p>The headline optimization latency is Planigo’s solver scope only. Use the planning and pipeline columns when comparing methods. The previous 15 October page used 300 iterations and 10 mm clearance; this run uses 120 iterations and 5 mm. Timing and success changes are not attributable to the C++ backend alone.</p>
-        <p>Each planner runs in a separate process, sequentially, with one warmup task per scene group. One seed provides no estimate of seed-to-seed variability.</p></div>
-      </div>
-      <details class="experiment-details"><summary>Configuration and provenance</summary><div class="setup-grid">
-        <dl><dt>Planigo</dt><dd>{cfg['solver']['igo_iterations']} iterations; B={cfg['solver']['igo_B']}, B0={cfg['solver']['igo_B0']}, T0={cfg['solver']['igo_T0']}; step {cfg['solver']['igo_dt']}; std {cfg['solver']['control_point_std']} rad. Twelve cubic controls, six free controls, 32 optimization waypoints. One solve with analytic retiming. path_score_v1, 64 reference samples, C++ IK geometry and final evaluation.</dd>
-        <dt>Hardware</dt><dd>RTX 5060 · Release/sm_120 · CPU thread counts fixed to one. Full hardware and binary metadata are included in the download.</dd>
-        <dt>cuRobo</dt><dd>Optimization mode: one native IK + particle/L-BFGS attempt, graph fallback disabled. Internal seeding and collision checks differ from Planigo.</dd></dl>
-        <dl><dt>Shared acceptance</dt><dd>Canonical 61-sphere Franka model and OBB scenes; {policy['voxel_size']} m ESDF voxels; position error ≤ {policy['position_tolerance_m']} m; quaternion error ≤ {policy['orientation_tolerance_quat']}; environment clearance ≥ {policy['environment_clearance_m']} m; self clearance ≥ {policy['self_clearance_m']} m. Acceleration ≤ {policy['max_acceleration']} rad/s²; jerk ≤ {policy['max_jerk']} rad/s³. Endpoint-inclusive samples at ≤ {policy['maximum_dt_s']} s, plus OOB, joint and velocity checks.</dd>
-        <dt>Source</dt><dd>Planigo {meta['git_commit'][:7]}; Robometrics 0.3.0. Four completed batches; raw records remain available locally. Recorded worktree state and configuration hashes are included with the data. Discrete checks do not establish continuous collision safety.</dd>
-        <dt>Downloads</dt><dd><a href="data/comparison.json">MB statistics and provenance</a> · <a href="data/mpinets.json">MPiNets statistics and provenance</a> · <a href="data/comparison-cases.json">All case records with inclusion flags</a></dd></dl>
-      </div></details>
-      <p class="figure-note">The six interactive demonstrations and the archived MPC sample retain their separately dated recordings; their timings are not measurements from these new runs. <a href="data/mpc.json">Archived MPC sample</a>.</p>
+      <details class="experiment-details"><summary>Evaluation protocol</summary>
+        <p><strong>Tasks.</strong> Endpoints pass shared pose, collision, map-boundary and joint-limit checks before optimization. MB retains {mb['n']} / {mb['total_n']} tasks; MPiNets retains {mp['n']} / {mp['total_n']}. Both planners are evaluated on those task IDs, including native planning failures. These are conditional success rates, not full-dataset end-to-end rates. <a href="data/ik-exclusions.json">Excluded task IDs and reasons ↓</a></p>
+        <p><strong>Timing.</strong> Synchronized host time; warmup, amortized initialization and file writes are excluded. Per-demo optimization time covers Planigo’s solver only. Full records: <a href="data/comparison.json">MB</a> · <a href="data/mpinets.json">MPiNets</a> · <a href="data/comparison-cases.json">per-task results</a>.</p>
+        <p><strong>Comparison.</strong> One seed42 run per planner and dataset. cuRobo uses one native IK + particle/L-BFGS attempt with graph fallback disabled. Both methods use a shared final discrete evaluator; native IK, seeding and internal collision checks differ.</p>
+      </details>
     </section>'''
     html, count = re.subn(r'<section id="results".*?</section>', lambda _: section, (WEB/'index.html').read_text(), flags=re.S)
     if count != 1:
         raise ValueError('Expected one results section')
-    html = html.replace('The current comparison uses one dataset, fixed configurations and seed42.',
-                        'The current comparison uses two datasets, a shared valid-IK cohort, fixed configurations and seed42.')
-    html = html.replace('the interactive viewer below uses the latest benchmark trajectories',
-                        'the interactive viewer below uses separately dated benchmark trajectories')
-    html = html.replace('Explore six interactive Franka Panda trajectories and results on 800 Robometrics problems.',
-                        'Explore six Franka Panda trajectories and valid-IK benchmark results on MotionBenchMaker and Motion Policy Networks.')
-    html = re.sub(r'\d+ iterations · \d+ samples per iteration',
-                  f"{cfg['solver']['igo_iterations']} iterations · {cfg['solver']['igo_B']} samples per iteration", html)
-    html = re.sub(r'Current full-horizon method, updated [^.]+\.',
-                  f'Current full-horizon method, updated {date}.', html)
-    html = html.replace('Twelve control points describe a continuous joint-space curve.',
-        'Feasible IK endpoints are ranked by a 64-sample reference-path score. Twelve control points describe a continuous joint-space curve.') if 'Feasible IK endpoints are ranked' not in html else html
-    html = html.replace('After analytic retiming, evaluate the complete trajectory',
-        'After analytic retiming, a C++ CPU evaluator checks the complete trajectory')
     result = dict(n=pg['n'], total_n=mb['total_n'], success=pg['success'], primary_seed=42,
                   seeds=[42], excluded_n=mb['excluded_n'], cohort_policy=COHORT,
                   optimize_s=pg['optimize_time_s'], duration_s=pg['duration_s'],

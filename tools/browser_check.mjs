@@ -15,6 +15,8 @@ try{
   await page.goto(base);await page.locator('#demos').scrollIntoViewIfNeeded();
   await page.waitForFunction(()=>document.querySelector('#viewport').dataset.ready,{timeout:60000});
   const cases=JSON.parse(await fs.readFile(path.join(root,'data/cases.json')));
+  if(await page.locator('#show-controls').isChecked() || await page.locator('#control-panel').isVisible())throw Error('Dynamics must be hidden initially');
+  if(await page.locator('#results details[open]').count())throw Error('Result details must be collapsed initially');
   let maxFKError=0,maxSphereError=0;
   for(let i=0;i<6;i++){
     await page.locator('.scene-card').nth(i).click();
@@ -112,7 +114,9 @@ try{
   if(!await fallback.locator('#viewer-poster').isVisible())throw Error('Missing WebGL fallback');
   await fallback.close();
   const nojs=await browser.newPage({javaScriptEnabled:false});await nojs.goto(base);
-  if(await nojs.locator('.results-table tbody tr').count()!==8)throw Error('Static results unavailable without JS');
+  const reports=await Promise.all(['comparison.json','mpinets.json'].map(async name=>JSON.parse(await fs.readFile(path.join(root,'data',name)))));
+  const expectedGroups=reports.reduce((n,r)=>n+Object.keys(r.summaries.planigo.groups).length,0);
+  if(await nojs.locator('.results-table tbody tr').count()!==expectedGroups || await nojs.locator('.comparison-table tbody tr').count()!==4)throw Error('Static results unavailable without JS');
   await nojs.close();
   if(errors.length)throw Error(errors.join('\n'));
   console.log(JSON.stringify({scenes:6,maxFKError,maxSphereError,widths:[320,390,768,1440],errors,previews,checks:['load','physical-time scrubbing','play/pause','layers','7D controls','keyboard orbit','camera reset','mobile layout','rapid selection','reduced motion','WebGL fallback','no-JS results']},null,2));

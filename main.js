@@ -1,12 +1,12 @@
 import {drawCharts,updateChartTime} from './charts.js';
 const $=id=>document.getElementById(id);
 const descriptions=[
-  'A reach into a box-shaped enclosure. Orbit the view to inspect the arm relative to the surrounding panels.',
-  'An inverted box scene with motion below the robot base. The expanded ESDF includes this lower workspace.',
-  'A compact bookshelf scene. Inspect the final approach and the positions of the elbow and wrist.',
-  'A thin bookshelf scene. The side view makes the shelf spacing and final arm posture easier to inspect.',
-  'A cage scene with several surrounding obstacles. Turn on collision spheres to inspect the robot representation.',
-  'A selected successful reach below a table. Inspect how the arm passes beneath the work surface.'
+  'A reach into a box-shaped enclosure.',
+  'A reach into an inverted box below the robot base.',
+  'An approach into a compact bookshelf.',
+  'A reach between closely spaced shelves.',
+  'An arm motion among surrounding cage obstacles.',
+  'A reach beneath the table surface.'
 ];
 let cases=[], viewer, data, index=0, time=0, playing=false, last=0, frame=0, visible=true, ticket=0, initPromise;
 const cache=new Map();
